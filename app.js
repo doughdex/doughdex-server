@@ -16,7 +16,8 @@ app.get('/', (req, res) => {
 app.use('/api', routes);
 
 app.all('*', (req, res) => {
-  res.status(404).end();
+  console.error(`Unknown route: ${req.method} ${req.originalUrl}`);
+  res.status(404).send({ error: 'Not found' });
 });
 
 const PORT = process.env.PORT || 3001;
