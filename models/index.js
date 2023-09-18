@@ -1,7 +1,6 @@
-const db = require('../db');
+const userModel = require('./user');
 
 module.exports = {
-  // === Add model methods here ===
-
+  userModel,
 };
 

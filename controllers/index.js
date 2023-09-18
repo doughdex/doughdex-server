@@ -1,8 +1,7 @@
-const models = require('../models');
+const userController = require('./userController');
 
 module.exports = {
-  // === Add controller methods here ===
-
+  userController,
 };
 
 
