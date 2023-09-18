@@ -20,4 +20,4 @@ router.post('/lists', listController.createList);
 router.post('/lists/:list_id/spots', listController.addSpotToList);
 router.delete('/list/:list_id/spots/:spot_id', listController.deleteSpotFromList);
 
-module.exports = routes;
+module.exports = router;
