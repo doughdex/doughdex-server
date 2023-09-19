@@ -15,4 +15,5 @@ bower_components/
 config.js
 jest.config.js
 .vscode/
+serviceAccountKey.json
 

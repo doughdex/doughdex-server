@@ -1,4 +1,5 @@
 const { userModel } = require('../models');
+const { decodeToken } = require('../middleware');
 
 const getUsers = () => {
 

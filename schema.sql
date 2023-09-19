@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS users;
 -- Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+    uid VARCHAR,
     name VARCHAR(255) NOT NULL,
     display_name VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,

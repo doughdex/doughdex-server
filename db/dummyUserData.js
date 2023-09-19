@@ -27,7 +27,7 @@ const insertDummyUsers = async (count) => {
       const query = {
         text: `INSERT INTO users (name, display_name, email, location, timezone, bio, avatar_url, is_private)
               VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        values: [name, name, email, location, timezone, bio, avatarUrl, isPrivate],
+        values: [name, display_name, email, location, timezone, bio, avatarUrl, isPrivate],
       };
 
       await client.query(query);

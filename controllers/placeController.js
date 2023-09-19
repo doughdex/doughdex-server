@@ -1,4 +1,5 @@
 const { placeModel } = require('../models');
+const { decodeToken } = require('../middleware');
 
 const getPlaces = () => {
 
