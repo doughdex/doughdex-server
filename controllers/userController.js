@@ -3,6 +3,8 @@ const { decodeToken } = require('../middleware');
 const { createPaginationLinks } = require('./helpers');
 
 const getUsers = async (req, res) => {
+  // TODO: admin should retrieve private and banned users
+
   try {
     const page = parseInt(req.query?.page) || 1;
     const limit = parseInt(req.query?.limit) || 10;
@@ -25,27 +27,42 @@ const getUsers = async (req, res) => {
     res.status(200).send(response);
   } catch (error) {
     console.error('Error retrieving users data:', error);
-    res.status(501).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-const getUserById = () => {
+const getUserById = async (req, res) => {
+  // TODO: Update so if request is made on behalf of user, returns regardless of private status
+  try {
+    const result = await userModel.getUserById(req.params.user_id);
+    res.status(200).send(data);
+
+  } catch (error) {
+    console.error('Error retrieving user data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const createUser = async (req, res) => {
+  try {
+    const result = await userModel.createUser(req.body);
+    const data = result.rows[0];
+    res.status(201).send(data);
+  } catch (error) {
+    console.error('Error creating new user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const updateUser = (req, res) => {
 
 };
 
-const createUser = () => {
+const deleteUser = (req, res) => {
 
 };
 
-const updateUser = () => {
-
-};
-
-const deleteUser = () => {
-
-};
-
-const getUserLists = () => {
+const getUserLists = (req, res) => {
 
 };
 
