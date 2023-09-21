@@ -1,0 +1,1 @@
+const { getDetailsByPlacesId } = require('./google.js');
