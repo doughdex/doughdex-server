@@ -54,16 +54,89 @@ const createUser = async (req, res) => {
   }
 };
 
-const updateUser = (req, res) => {
+const updateUser = async (req, res) => {
+  const userId = req.params.user_id;
+  const updateData = req.body;
+
+  if (req.user.id === req.params.user_id) {
+
+    for (const key in req.body) {
+      if (key === 'is_banned' || key === 'is_admin') { continue; }
+      req.user[key] = req.body[key];
+    }
+
+    try {
+      const result = await userModel.updateUser(req.user);
+      const data = result.rows[0];
+      res.status(200).send(data);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  } else if (req.is_admin) {
+
+    try {
+      const queryParts = [];
+      const queryValues = [];
+
+      for (const key in updateData) {
+        queryParts.push(`${key} = $${queryValues.length + 1}`);
+        queryValues.push(updateData[key]);
+      }
+
+      const result = await userModel.updateUser(queryParts, queryValues);
+      const data = result.rows[0];
+      res.status(200).send(data);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  } else {
+    res.status(403).json({ message: 'Unauthorized' });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  // Current user or admin only
+  if (req.is_admin || req.user.id === req.params.user_id) {
+    try {
+      await userModel.deleteUser(req.params.user_id);
+      res.status(204).end();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  } else {
+    res.status(403).json({ message: 'Unauthorized' });
+  }
 
 };
 
-const deleteUser = (req, res) => {
+const getUserLists = async (req, res) => {
+  // Should return lists/users that aren't private or banned, if current user is private, should still return their list
+  try {
+    const page = parseInt(req.query?.page) || 1;
+    const limit = parseInt(req.query?.limit) || 5;
+    const result = await userModel.getUserLists(req.params.user_id, page, limit);
 
-};
+    const data = result.rows;
+    const totalCount = parseInt(data[0]?.total_count, 10) || 0;
+    const totalPages = Math.ceil(totalCount / limit) || 0;
 
-const getUserLists = (req, res) => {
+    const response = {
+      page,
+      limit,
+      totalCount,
+      totalPages,
+      data
+    }
 
+
+    res.status(200).send(response);
+  } catch (error) {
+    console.error('Error retrieving user\'s lists:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 module.exports = {
