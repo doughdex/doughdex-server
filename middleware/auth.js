@@ -4,7 +4,7 @@ const firebase = initializeApp();
 const { getAuth } = require('firebase-admin/auth');
 const db = require('../db');
 
-const decodeToken = async (req, res, next) => {
+const authenticateUser = async (req, res, next) => {
   try {
     const authHeader = req.headers.Authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -34,4 +34,4 @@ const decodeToken = async (req, res, next) => {
   }
 };
 
-module.exports = { decodeToken };
+module.exports = { authenticateUser };

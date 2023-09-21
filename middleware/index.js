@@ -1,3 +1,3 @@
-const { decodeToken } = require('./auth');
+const { authenticateUser } = require('./auth');
 
-module.exports = { decodeToken };
+module.exports = { authenticateUser };
