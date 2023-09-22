@@ -21,4 +21,12 @@ router.post('/lists', listController.createList);
 router.post('/lists/:list_id/spots', listController.addSpotToList);
 router.delete('/list/:list_id/spots/:spot_id', listController.deleteSpotFromList);
 
+// Admin Routes (FUTURE)
+
+// Reviews & Ratings Routes (FUTURE)
+
+// Activity Routes (FUTURE)
+
+// Flags routes (FUTURE)
+
 module.exports = router;
