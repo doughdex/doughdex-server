@@ -8,7 +8,7 @@ const authenticateUser = async (req, res, next) => {
   try {
     const authHeader = req.headers.Authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Unauthorized'});
+      res.status(401).json({ message: 'Unauthorized'});
     }
     const token = authHeader.split(' ')[1];
 
@@ -23,14 +23,14 @@ const authenticateUser = async (req, res, next) => {
     const user = userResult.rows[0];
 
     if (!user) {
-      return res.status(401).json({ message: 'Unauthorized'});
+      res.status(401).json({ message: 'Unauthorized'});
+    } else {
+      req.user = user;
+      next();
     }
-
-    req.user = user;
-    next();
   } catch (error) {
     console.error('Error decoding token:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
