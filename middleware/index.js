@@ -1,3 +1,7 @@
 const { authenticateUser } = require('./auth');
+const { isAdmin } = require('./admin');
 
-module.exports = { authenticateUser };
+module.exports = {
+  authenticateUser,
+  isAdmin,
+};

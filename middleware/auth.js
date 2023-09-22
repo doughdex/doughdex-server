@@ -12,11 +12,11 @@ const authenticateUser = async (req, res, next) => {
     }
     const token = authHeader.split(' ')[1];
 
-    const decodeToken = await getAuth().verifyIdToken(token);
+    const decodedToken = await getAuth(firebase).verifyIdToken(token);
 
     const userQuery = {
       'text': 'SELECT * FROM users WHERE uid = $1',
-      'values': [decodeToken.uid],
+      'values': [decodedToken.uid],
     };
 
     const userResult = db.query(userQuery);
