@@ -99,7 +99,6 @@ describe('authenticateUser', () => {
   });
 
   it('should return a status code 500 if there is no Authorization header in request', async () => {
-    req.headers = {};
 
     await authenticateUser(req, res, next);
 
