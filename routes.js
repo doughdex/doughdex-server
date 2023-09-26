@@ -1,13 +1,13 @@
 const router = require('express').Router();
 const { userController, placeController, listController } = require('./controllers');
-const { authenticateUser } = require('./middleware');
+const middleware = require('./middleware');
 
 // User Routes
 router.get('/users', userController.getUsers);
 router.get('/users/:user_id', userController.getUserById);
 router.post('/users', userController.createUser);
-router.put('/users/:user_id', authenticateUser, userController.updateUser);
-router.delete('/users/:user_id', authenticateUser, userController.deleteUser);
+router.put('/users/:user_id', (req, res, next) => middleware.authenticateUser(req, res, next), userController.updateUser);
+router.delete('/users/:user_id', (req, res, next) => middleware.authenticateUser(req, res, next), userController.deleteUser);
 router.get('/users/:user_id/lists', userController.getUserLists);
 
 // Place Routes

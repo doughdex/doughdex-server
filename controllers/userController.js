@@ -35,6 +35,7 @@ const getUserById = async (req, res) => {
   // TODO: Update so if request is made on behalf of user, returns regardless of private status
   try {
     const result = await userModel.getUserById(req.params.user_id);
+    const data = result.rows[0];
     res.status(200).send(data);
 
   } catch (error) {
@@ -58,28 +59,13 @@ const updateUser = async (req, res) => {
   const userId = req.params.user_id;
   const updateData = req.body;
 
-  if (req.user.id === req.params.user_id) {
-
-    for (const key in req.body) {
-      if (key === 'is_banned' || key === 'is_admin') { continue; }
-      req.user[key] = req.body[key];
-    }
-
-    try {
-      const result = await userModel.updateUser(req.user);
-      const data = result.rows[0];
-      res.status(200).send(data);
-    } catch (error) {
-      console.error('Error updating user:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  } else if (req.is_admin) {
-
+  if (req.user.id === userId) {
     try {
       const queryParts = [];
       const queryValues = [];
 
       for (const key in updateData) {
+        if (key === 'is_admin' || key === 'is_banned') { continue; }
         queryParts.push(`${key} = $${queryValues.length + 1}`);
         queryValues.push(updateData[key]);
       }

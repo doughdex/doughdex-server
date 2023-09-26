@@ -1,6 +1,5 @@
 require('dotenv').config();
-const { initializeApp } = require('firebase-admin/app');
-const firebase = initializeApp();
+const { firebase } = require('../app.js');
 const { getAuth } = require('firebase-admin/auth');
 const db = require('../db');
 
@@ -19,14 +18,14 @@ const authenticateUser = async (req, res, next) => {
       'values': [decodedToken.uid],
     };
 
-    const userResult = db.query(userQuery);
+    const userResult = await db.query(userQuery);
     const user = userResult.rows[0];
 
     if (!user) {
       res.status(401).json({ message: 'Unauthorized'});
     } else {
       req.user = user;
-      next();
+      return next();
     }
   } catch (error) {
     console.error('Error decoding token:', error);

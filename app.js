@@ -1,4 +1,6 @@
 require('dotenv').config();
+const { initializeApp } = require('firebase-admin/app');
+module.exports.firebase = initializeApp();
 const express = require('express');
 const routes = require('./routes');
 const morgan = require('morgan');
@@ -22,6 +24,5 @@ app.all('*', (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT);
+module.exports.server = app.listen(PORT);
 console.log(`Listening on port ${PORT}`);
-

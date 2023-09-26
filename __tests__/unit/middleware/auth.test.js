@@ -1,12 +1,6 @@
-// const jest = require('jest');
 const { authenticateUser } = require('../../../middleware');
 const db = require('../../../db');
-
-jest.mock('firebase-admin/app', () => {
-  return {
-    initializeApp: jest.fn()
-  };
-});
+const { server } = require('../../../app');
 
 jest.mock('firebase-admin/auth', () => {
   return {
@@ -70,6 +64,7 @@ describe('authenticateUser', () => {
 
   afterAll(() => {
     console.error = consoleError;
+    server.close();
   });
 
   it('should authenticate a user with a valid token', async () => {
