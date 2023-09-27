@@ -9,7 +9,6 @@ const getUsers = async (req, res) => {
     const page = parseInt(req.query?.page) || 1;
     const limit = parseInt(req.query?.limit) || 10;
     const result = await userModel.getUsers(page, limit);
-
     const data = result.rows;
     const totalCount = parseInt(data[0].total_count, 10);
     const totalPages = Math.ceil(totalCount / limit);
