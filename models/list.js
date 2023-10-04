@@ -64,7 +64,7 @@ const deleteList = () => {
 
 const addSpotToList = (listId, placeId) => {
   query = {
-    text: 'INSER INTO list_places (list_id, place_id) VALUES ($1, $2) RETURNING *',
+    text: 'INSERT INTO list_places (list_id, place_id) VALUES ($1, $2) RETURNING *',
     values: [listId, placeId]
   }
   return db.query(query);
