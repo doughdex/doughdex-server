@@ -17,9 +17,9 @@ router.get('/places/:place_id', placeController.getPlaceById);
 // List Routes
 router.get('/lists', listController.getLists);
 router.get('/lists/:list_id', listController.getListById);
-router.post('/lists', listController.createList);
-router.post('/lists/:list_id/spots', listController.addSpotToList);
-router.delete('/list/:list_id/spots/:spot_id', listController.deleteSpotFromList);
+router.post('/lists', (req, res, next) => middleware.authenticateUser(req, res, next), listController.createList);
+router.post('/lists/:list_id/spots', (req, res, next) => middleware.authenticateUser(req, res, next), listController.addSpotToList);
+router.delete('/list/:list_id/spots/:spot_id', (req, res, next) => middleware.authenticateUser(req, res, next), listController.deleteSpotFromList);
 
 // Admin Routes (FUTURE)
 

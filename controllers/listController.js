@@ -39,8 +39,17 @@ const getListById = async (req, res) => {
   }
 };
 
-const createList = () => {
+const createList = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const listName = req.body.listName;
 
+    const result = await listModel.createList(userId, listName);
+    const data = result.rows[0];
+  } catch (error) {
+    console.error('Error creating list', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 const updateList = () => {

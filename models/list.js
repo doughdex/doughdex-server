@@ -45,7 +45,12 @@ const getListById = (id) => {
   return db.query(query);
 };
 
-const createList = () => {
+const createList = (userId, listName) => {
+  const query = {
+    text: 'INSERT INTO lists (user_id, name) VALUES ($1, $2)',
+    values: [userId, name]
+  };
+  return db.query(query);
 
 };
 
