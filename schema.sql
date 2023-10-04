@@ -24,7 +24,7 @@ CREATE TABLE users (
     is_banned BOOLEAN DEFAULT false,
     is_private BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    last_login_at TIMESTAMPTZ
+    last_login_at TIMESTAMPTZ DEFAULT NOW(),
 );
 
 -- Places Table
