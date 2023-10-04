@@ -46,6 +46,7 @@ const createList = async (req, res) => {
 
     const result = await listModel.createList(userId, listName);
     const data = result.rows[0];
+    res.status(201).send(data);
   } catch (error) {
     console.error('Error creating list', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -60,8 +61,17 @@ const deleteList = () => {
 
 };
 
-const addSpotToList = () => {
-
+const addSpotToList = async () => {
+  try {
+    const listId = req.query.list_id;
+    const placeId = req.body.place_id;
+    const result = await listModel.addSpotToList(listId, placeId);
+    const data = result.rows[0];
+    res.status(201).send(data);
+  } catch (error) {
+    console.error('Error adding spot to list', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 const deleteSpotFromList = () => {

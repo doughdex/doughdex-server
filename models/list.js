@@ -47,7 +47,7 @@ const getListById = (id) => {
 
 const createList = (userId, listName) => {
   const query = {
-    text: 'INSERT INTO lists (user_id, name) VALUES ($1, $2)',
+    text: 'INSERT INTO lists (user_id, name) VALUES ($1, $2) RETURNING *',
     values: [userId, name]
   };
   return db.query(query);
@@ -62,8 +62,12 @@ const deleteList = () => {
 
 };
 
-const addSpotToList = () => {
-
+const addSpotToList = (listId, placeId) => {
+  query = {
+    text: 'INSER INTO list_places (list_id, place_id) VALUES ($1, $2) RETURNING *',
+    values: [listId, placeId]
+  }
+  return db.query(query);
 };
 
 const deleteSpotFromList = () => {
