@@ -58,8 +58,9 @@ const updateList = () => {
 };
 
 const deleteList = async (req, res) => {
+  // TODO: only list creator should be able to delete list
   try {
-    const listId = req.query.list_id;
+    const listId = req.params.list_id;
     await listModel.deleteAllSpotsFromList(listId);
     await listModel.deleteList(listId);
     res.status(204).end();
@@ -72,7 +73,7 @@ const deleteList = async (req, res) => {
 
 const addSpotToList = async (req, res) => {
   try {
-    const listId = req.query.list_id;
+    const listId = req.params.list_id;
     const placeId = req.body.place_id;
     const result = await listModel.addSpotToList(listId, placeId);
     const data = result.rows[0];
@@ -85,11 +86,13 @@ const addSpotToList = async (req, res) => {
 
 const deleteSpotFromList = async (req, res) => {
   try {
-    const placeId
-
-
+    const placeId = req.params.spot_id;
+    const listId = req.params.list_id;
+    await listModel.deleteSpotFromList(listId, placeId);
+    res.status(204).end();
   } catch (error) {
-
+    console.error('Error deleting spot from list', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
