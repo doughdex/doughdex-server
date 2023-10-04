@@ -57,11 +57,20 @@ const updateList = () => {
 
 };
 
-const deleteList = () => {
+const deleteList = async (req, res) => {
+  try {
+    const listId = req.query.list_id;
+    await listModel.deleteAllSpotsFromList(listId);
+    await listModel.deleteList(listId);
+    res.status(204).end();
+  } catch (error) {
+    console.error('Error deleting list', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 
 };
 
-const addSpotToList = async () => {
+const addSpotToList = async (req, res) => {
   try {
     const listId = req.query.list_id;
     const placeId = req.body.place_id;
@@ -74,8 +83,14 @@ const addSpotToList = async () => {
   }
 };
 
-const deleteSpotFromList = () => {
+const deleteSpotFromList = async (req, res) => {
+  try {
+    const placeId
 
+
+  } catch (error) {
+
+  }
 };
 
 const updateSpotInList = () => {

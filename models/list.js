@@ -58,8 +58,20 @@ const updateList = () => {
 
 };
 
-const deleteList = () => {
+const deleteList = (listId) => {
+  query = {
+    text: 'DELETE FROM lists WHERE id = $1',
+    values: [listId]
+  };
+  return db.query(query);
+};
 
+const deleteAllSpotsFromList = (listId) => {
+  query = {
+    text: 'DELETE FROM list_places WHERE list_id = $1',
+    values: [listId]
+  };
+  return db.query(query);
 };
 
 const addSpotToList = (listId, placeId) => {
