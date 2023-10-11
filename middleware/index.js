@@ -1,30 +1,26 @@
 const { authenticateRequestor } = require('./auth');
 
 const isAuthenticated = (req, res, next) => {
-
-  if (req.user) {
-    return next();
-  } else {
+  if (!req.user) {
     res.status(401).json({ message: 'Login required.' });
+  } else {
+    return next();
   }
 };
 
 const validateUserOwnership = (req, res, next) => {
-
-  const userId = req.params.user_id;
-
-  if (req.user.id === userId) {
-    return next();
-  } else {
+  if (!req.user || req.user.id !== req.params.user_id) {
     res.status(401).json({ message: 'Unauthorized' });
+  } else {
+    return next();
   }
 };
 
 const isAdmin = (req, res, next) => {
-  if (req.user.is_admin) {
-    return next();
-  } else {
+  if (!req.user || !req.user.is_admin) {
     res.status(401).json({ message: 'Unauthorized' });
+  } else {
+    return next();
   }
 };
 
