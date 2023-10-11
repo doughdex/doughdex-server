@@ -1,7 +1,7 @@
 const { isAdmin, isAuthenticated, validateUserOwnership } = require('../../../middleware');
 const { server } = require('../../../app');
 
-describe.only('middleware authorization functions', () => {
+describe('middleware authorization functions', () => {
 
   let req;
   let res;
