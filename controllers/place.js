@@ -1,4 +1,4 @@
-const { placeModel } = require('../models');
+const { mdoels } = require('../models');
 const { decodeToken } = require('../middleware');
 
 const getPlaces = async (req, res) => {
@@ -6,7 +6,7 @@ const getPlaces = async (req, res) => {
   try {
     const page = parseInt(req.query?.page) || 1;
     const limit = parseInt(req.query?.limit) || 10;
-    const result = await placeModel.getPlaces(page, limit);
+    const result = await models.Place.getPlaces(page, limit);
     const data = result.rows;
     const totalCount = parseInt(data[0].total_count, 10);
     const totalPages = Math.ceil(totalCount / limit);
@@ -30,7 +30,7 @@ const getPlaces = async (req, res) => {
 const getPlaceById = async (req, res) => {
   try {
     const id = req.params.place_id;
-    const result = await placeModel.getPlaceById(id);
+    const result = await models.Place.getPlaceById(id);
     const data = result.rows[0];
     res.status(200).send(data);
   } catch (error) {

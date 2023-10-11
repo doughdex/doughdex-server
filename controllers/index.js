@@ -1,11 +1,11 @@
-const userController = require('./userController');
-const placeController = require('./placeController');
-const listController = require('./listController');
+const User = require('./user');
+const Place = require('./place');
+const List = require('./list');
 
-module.exports = {
-  userController,
-  placeController,
-  listController,
+module.exports.controllers = {
+  User,
+  Place,
+  List
 };
 
 

@@ -1,4 +1,4 @@
-const { userModel } = require('../models');
+const { models } = require('../models');
 const { decodeToken } = require('../middleware');
 const { createPaginationLinks } = require('./helpers');
 
@@ -8,7 +8,7 @@ const getUsers = async (req, res) => {
   try {
     const page = parseInt(req.query?.page) || 1;
     const limit = parseInt(req.query?.limit) || 10;
-    const result = await userModel.getUsers(page, limit);
+    const result = await models.User.getUsers(page, limit);
     const data = result.rows;
     const totalCount = parseInt(data[0].total_count, 10);
     const totalPages = Math.ceil(totalCount / limit);
@@ -33,7 +33,7 @@ const getUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   // TODO: Update so if request is made on behalf of user, returns regardless of private status
   try {
-    const result = await userModel.getUserById(req.params.user_id);
+    const result = await models.User.getUserById(req.params.user_id);
     const data = result.rows[0];
     res.status(200).send(data);
 
@@ -45,7 +45,7 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const result = await userModel.createUser(req.body);
+    const result = await models.User.createUser(req.body);
     const data = result.rows[0];
     res.status(201).send(data);
   } catch (error) {
@@ -69,7 +69,7 @@ const updateUser = async (req, res) => {
         queryValues.push(updateData[key]);
       }
 
-      const result = await userModel.updateUser(queryParts, queryValues);
+      const result = await models.User.updateUser(queryParts, queryValues);
       const data = result.rows[0];
       res.status(200).send(data);
     } catch (error) {
@@ -85,7 +85,7 @@ const deleteUser = async (req, res) => {
   // Current user or admin only
   if (req.is_admin || req.user.id === req.params.user_id) {
     try {
-      await userModel.deleteUser(req.params.user_id);
+      await models.User.deleteUser(req.params.user_id);
       res.status(204).end();
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -102,7 +102,7 @@ const getUserLists = async (req, res) => {
   try {
     const page = parseInt(req.query?.page) || 1;
     const limit = parseInt(req.query?.limit) || 5;
-    const result = await userModel.getUserLists(req.params.user_id, page, limit);
+    const result = await models.User.getUserLists(req.params.user_id, page, limit);
 
     const data = result.rows;
     const totalCount = parseInt(data[0]?.total_count, 10) || 0;

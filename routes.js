@@ -1,26 +1,26 @@
 const router = require('express').Router();
-const { userController, placeController, listController } = require('./controllers');
+const { controllers } = require('./controllers');
 const middleware = require('./middleware');
 
 // User Routes
-router.get('/users', userController.getUsers);
-router.get('/users/:user_id', userController.getUserById);
-router.post('/users', userController.createUser);
-router.put('/users/:user_id', (req, res, next) => middleware.authenticateUser(req, res, next), userController.updateUser);
-router.delete('/users/:user_id', (req, res, next) => middleware.authenticateUser(req, res, next), userController.deleteUser);
-router.get('/users/:user_id/lists', userController.getUserLists);
+router.get('/users', controllers.User.getUsers);
+router.get('/users/:user_id', controllers.User.getUserById);
+router.post('/users', controllers.User.createUser);
+router.put('/users/:user_id', (req, res, next) => middleware.authenticateUser(req, res, next), controllers.User.updateUser);
+router.delete('/users/:user_id', (req, res, next) => middleware.authenticateUser(req, res, next), controllers.User.deleteUser);
+router.get('/users/:user_id/lists', controllers.User.getUserLists);
 
 // Place Routes
-router.get('/places', placeController.getPlaces);
-router.get('/places/:place_id', placeController.getPlaceById);
+router.get('/places', controllers.Place.getPlaces);
+router.get('/places/:place_id', controllers.Place.getPlaceById);
 
 // List Routes
-router.get('/lists', listController.getLists);
-router.get('/lists/:list_id', listController.getListById);
-router.post('/lists', (req, res, next) => middleware.authenticateUser(req, res, next), listController.createList);
-router.post('/lists/:list_id/spots', (req, res, next) => middleware.authenticateUser(req, res, next), listController.addSpotToList);
-router.delete('/list/:list_id/', (req, res, next) => middleware.authenticateUser(req, res, next), listController.deleteList);
-router.delete('/list/:list_id/spots/:spot_id', (req, res, next) => middleware.authenticateUser(req, res, next), listController.deleteSpotFromList);
+router.get('/lists', controllers.List.getLists);
+router.get('/lists/:list_id', controllers.List.getListById);
+router.post('/lists', (req, res, next) => middleware.authenticateUser(req, res, next), controllers.List.createList);
+router.post('/lists/:list_id/spots', (req, res, next) => middleware.authenticateUser(req, res, next), controllers.List.addSpotToList);
+router.delete('/list/:list_id/', (req, res, next) => middleware.authenticateUser(req, res, next), controllers.List.deleteList);
+router.delete('/list/:list_id/spots/:spot_id', (req, res, next) => middleware.authenticateUser(req, res, next), controllers.List.deleteSpotFromList);
 
 // Admin Routes (FUTURE)
 

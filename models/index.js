@@ -1,10 +1,10 @@
-const userModel = require('./user');
-const placeModel = require('./place');
-const listModel = require('./list');
+const User = require('./user');
+const Place = require('./place');
+const List = require('./list');
 
-module.exports = {
-  userModel,
-  placeModel,
-  listModel,
+module.exports.models = {
+  User,
+  Place,
+  List,
 };
 
