@@ -1,7 +1,5 @@
-const { authenticateUser } = require('./auth');
-const { isAdmin } = require('./admin');
+const { authenticateRequestor } = require('./auth');
 
 module.exports = {
-  authenticateUser,
-  isAdmin,
+  authenticateRequestor,
 };

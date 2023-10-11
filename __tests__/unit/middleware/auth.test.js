@@ -1,4 +1,4 @@
-const { authenticateUser } = require('../../../middleware');
+const { authenticateRequestor } = require('../../../middleware');
 const db = require('../../../db');
 const { server } = require('../../../app');
 
@@ -42,7 +42,7 @@ jest.mock('../../../db', () => {
   };
 });
 
-describe('authenticateUser', () => {
+describe('authenticateRequestor', () => {
 
   let consoleError;
   let req;
@@ -70,59 +70,52 @@ describe('authenticateUser', () => {
   it('should authenticate a user with a valid token', async () => {
     req.headers.Authorization = 'Bearer validToken';
 
-    await authenticateUser(req, res, next);
+    await authenticateRequestor(req, res, next);
 
     expect(req.user.uid).toEqual('uid123');
     expect(next).toHaveBeenCalled();
   });
 
-  it('should return a status code 500 if provided an invalid token', async () => {
+  it('should return a 500 status code if provided an invalid token', async () => {
     req.headers.Authorization = 'Bearer invalidToken';
 
-    await authenticateUser(req, res, next);
+    await authenticateRequestor(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Internal Server Error' });
-    expect(req.user).toBe(undefined);
     expect(next).not.toHaveBeenCalled();
   });
 
-  it('should return a status code 500 if token is not a Bearer token', async () => {
+  it('should set req.user to null if token is not a Bearer token', async () => {
     req.headers.Authorization = 'validToken';
 
-    await authenticateUser(req, res, next);
+    await authenticateRequestor(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ message: 'Internal Server Error' });
-    expect(req.user).toBe(undefined);
-    expect(next).not.toHaveBeenCalled();
+    expect(req.user).toBe(null);
+    expect(next).toHaveBeenCalled();
   });
 
-  it('should return a status code 500 if there is no Authorization header in request', async () => {
+  it('should set req.user to null if there is no Authorization header in request', async () => {
 
-    await authenticateUser(req, res, next);
+    await authenticateRequestor(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ message: 'Internal Server Error' });
-    expect(req.user).toBe(undefined);
-    expect(next).not.toHaveBeenCalled();
+    expect(req.user).toBe(null);
+    expect(next).toHaveBeenCalled();
   });
 
-  it('should return a status code 401 if no user is returned', async () => {
+  it('should set req.user to null if no user is returned', async () => {
     req.headers.Authorization = "Bearer noUser";
 
-    await authenticateUser(req, res, next);
+    await authenticateRequestor(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ message: 'Unauthorized' });
-    expect(req.user).toBe(undefined);
-    expect(next).not.toHaveBeenCalled();
+    expect(req.user).toBe(null);
+    expect(next).toHaveBeenCalled();
   });
 
   it('should return a status code 500 if there is a db query error', async () => {
     req.headers.Authorization = "Bearer dbError";
 
-    await authenticateUser(req, res, next);
+    await authenticateRequestor(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Internal Server Error' });
