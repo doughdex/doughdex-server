@@ -4,6 +4,7 @@ module.exports.firebase = initializeApp();
 const express = require('express');
 const routes = require('./routes');
 const morgan = require('morgan');
+const { authenticateRequestor } = require('./middleware')
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use(morgan(':method :url :status - :response-time ms :remote-addr'));
 
+app.use(authenticateRequestor);
 app.get('/', (req, res) => {
   res.send('Hello world.');
 });
