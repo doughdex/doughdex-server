@@ -1,7 +1,7 @@
 const { createPaginationLinks } = require('../../../controllers/helpers');
 const { server } = require('../../../app');
 
-describe.only('createPaginationLinks', () => {
+describe('createPaginationLinks', () => {
 
   afterAll(() => {
     server.close();

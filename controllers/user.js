@@ -3,11 +3,10 @@ const { decodeToken } = require('../middleware');
 const { createPaginationLinks } = require('./helpers');
 
 const getUsers = async (req, res) => {
-  // TODO: admin should retrieve private and banned users
 
   try {
-    const page = parseInt(req.query?.page) || 1;
-    const limit = parseInt(req.query?.limit) || 10;
+    const page = parseInt(req.query?.page) >= 1 ? parseInt(req.query.page) : 1;
+    const limit = parseInt(req.query?.limit) >= 1 ? parseInt(req.query.limit) : 10;
     const result = await models.User.getUsers(page, limit);
     const data = result.rows;
     const totalCount = parseInt(data[0].total_count, 10);
