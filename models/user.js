@@ -28,10 +28,10 @@ const createUser = (data) => {
   return db.query(query);
 };
 
-const updateUser = (parts, values) => {
+const updateUser = (userId, parts, values) => {
   const query = {
-    text: `UPDATE users ${parts.join(', ')} WHERE id = $${values.length + 1}`,
-    values: values
+    text: `UPDATE users SET ${parts.join(', ')} WHERE id = $${values.length + 1}`,
+    values: [...values, userId]
   };
   return db.query(query);
 };

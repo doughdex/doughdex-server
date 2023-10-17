@@ -31,6 +31,7 @@ describe('User Model', () => {
 
       models.User.getUsers(page, limit);
 
+      expect(setOffset).toHaveBeenCalledWith(page, limit);
       expect(db.query).toHaveBeenCalledWith(mockedQuery);
     });
 
@@ -79,15 +80,16 @@ describe('User Model', () => {
 
     it('should generate and execute a valid query', () => {
 
-      const parts = ['id', 'name', 'email'];
-      const values = [12345, 'testUser', 'test@test.com'];
+      const userId = 1;
+      const parts = ['name', 'email'];
+      const values = ['testUser', 'test@test.com'];
 
       mockedQuery = {
-        text: `UPDATE users ${parts.join(', ')} WHERE id = $${values.length + 1}`,
-        values: values
+        text: `UPDATE users SET ${parts.join(', ')} WHERE id = $${values.length + 1}`,
+        values: [...values, userId]
       };
 
-      models.User.updateUser(parts, values);
+      models.User.updateUser(userId, parts, values);
 
       expect(db.query).toHaveBeenCalledWith(mockedQuery);
     });
@@ -126,6 +128,7 @@ describe('User Model', () => {
 
       models.User.getUserLists(userId, page, limit);
 
+      expect(setOffset).toHaveBeenCalledWith(page, limit);
       expect(db.query).toHaveBeenCalledWith(mockedQuery);
     });
 

@@ -73,7 +73,7 @@ const updateUser = async (req, res) => {
       queryValues.push(updateData[key]);
     }
 
-    const result = await models.User.updateUser(queryParts, queryValues);
+    const result = await models.User.updateUser(userId, queryParts, queryValues);
     const data = result.rows[0];
     res.status(200).send(data);
   } catch (error) {
