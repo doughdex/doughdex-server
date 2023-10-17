@@ -1,4 +1,4 @@
-const { db } = require('../db');
+const db = require('../db');
 const { setOffset } = require('./helpers');
 
 const getLists = (page, limit) => {
@@ -12,7 +12,7 @@ const getLists = (page, limit) => {
 
 const getListById = (listId) => {
   const query = {
-    text: ```
+    text: `
       SELECT
         l.id,
         l.user_id,
@@ -46,7 +46,7 @@ const getListById = (listId) => {
         AND l.is_flagged = false
         AND l.is_visible = true
       ORDER BY lp.position DESC
-    ```,
+    `,
     values: [listId]
   }
   return db.query(query);
@@ -55,14 +55,18 @@ const getListById = (listId) => {
 const createList = (userId, listName) => {
   const query = {
     text: 'INSERT INTO lists (user_id, name) VALUES ($1, $2) RETURNING *',
-    values: [userId, name]
+    values: [userId, listName]
   };
   return db.query(query);
 
 };
 
-const updateList = () => {
-
+const updateList = (listId, parts, values) => {
+  const query = {
+    text: `UPDATE lists SET ${parts.join(', ')} WHERE id = $${values.length + 1}`,
+    values: [...values, listId]
+  };
+  return db.query(query);
 };
 
 const deleteList = (listId) => {
@@ -92,14 +96,12 @@ const addSpotToList = (listId, placeId) => {
 const deleteSpotFromList = (listId, placeId) => {
   query = {
     text: 'DELETE FROM list_places WHERE list_id = $1 AND place_id = $2',
-    values: [ilstId, placeId]
+    values: [listId, placeId]
   };
   return db.query(query);
 };
 
-const updateSpotInList = () => {
-
-};
+// Todo: Add a function to update the position of a spot in a list
 
 module.exports = {
   getLists,
@@ -108,6 +110,6 @@ module.exports = {
   updateList,
   deleteList,
   addSpotToList,
-  updateSpotInList,
+  deleteAllSpotsFromList,
   deleteSpotFromList,
 }

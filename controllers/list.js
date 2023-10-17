@@ -53,8 +53,29 @@ const createList = async (req, res) => {
   }
 };
 
-const updateList = () => {
+const updateList = async (req, res) => {
+  const listId = req.params.list_id;
+  const updateData = req.body;
 
+  try {
+    const queryParts = [];
+    const queryValues = [];
+
+    for (const key in updateData) {
+      if (key === 'is_flagged') { continue; }
+      queryParts.push(`${key} = $${queryValues.length + 1}`);
+      queryValues.push(updateData[key]);
+    }
+
+    console.log(queryParts, queryValues);
+
+    const result = await models.List.updateList(listId, queryParts, queryValues);
+    const data = result.rows[0];
+    res.status(200).send(data);
+  } catch (error) {
+    console.error('Error updating list', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 const deleteList = async (req, res) => {
