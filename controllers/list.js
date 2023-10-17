@@ -105,7 +105,7 @@ const addSpotToList = async (req, res) => {
   }
 };
 
-const deleteSpotFromList = async (req, res) => {
+const removeSpotFromList = async (req, res) => {
   try {
     const placeId = req.params.spot_id;
     const listId = req.params.list_id;
@@ -129,5 +129,5 @@ module.exports = {
   deleteList,
   addSpotToList,
   updateSpotInList,
-  deleteSpotFromList,
+  removeSpotFromList,
 }
