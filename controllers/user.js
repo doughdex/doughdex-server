@@ -93,10 +93,9 @@ const deleteUser = async (req, res) => {
 };
 
 const getUserLists = async (req, res) => {
-  // Should return lists/users that aren't private or banned, if current user is private, should still return their list
   try {
-    const page = parseInt(req.query?.page) || 1;
-    const limit = parseInt(req.query?.limit) || 5;
+    const page = parseInt(req.query?.page) >= 1 ? parseInt(req.query.page) : 1;
+    const limit = parseInt(req.query?.limit) >= 1 ? parseInt(req.query.limit) : 5;
     const result = await models.User.getUserLists(req.params.user_id, page, limit);
 
     const data = result.rows;
@@ -110,8 +109,6 @@ const getUserLists = async (req, res) => {
       totalPages,
       data
     }
-
-
     res.status(200).send(response);
   } catch (error) {
     console.error('Error retrieving user\'s lists:', error);

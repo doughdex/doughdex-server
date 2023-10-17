@@ -428,4 +428,97 @@ describe('deleteUser', () => {
 
 describe('getUsersLists', () => {
 
+  beforeAll(() => {
+    consoleError = console.error;
+    console.error = jest.fn();
+  });
+
+  beforeEach(() => {
+    req = {
+      query: {
+        page: 1,
+        limit: 5,
+      },
+      params: {},
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn(),
+    };
+  });
+
+  afterAll(() => {
+    console.error = consoleError;
+    server.close();
+  });
+
+  it('should return a 200 status code and data upon successful operation', async () => {
+
+    req.params.user_id = 1;
+
+    const mockData = {
+      rows: [
+        { id: 1, user_id: 1, name: 'Pizza Test 1', total_count: 2 },
+        { id: 2, user_id: 1, name: 'Pizza Test 2', total_count: 2 },
+      ]
+    };
+
+    const expectedResponse = {
+      page: 1,
+      limit: 5,
+      totalCount: 2,
+      totalPages: 1,
+      data: mockData.rows,
+    };
+
+    models.User.getUserLists.mockResolvedValueOnce(mockData);
+
+    await controllers.User.getUserLists(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(expectedResponse);
+
+  });
+
+  it('should return a 200 status code and data upon successful operation when invalid query params are provided', async () => {
+    req.params.user_id = 1;
+    req.query.page = 'a';
+    req.query.limit = -1;
+
+    const mockData = {
+      rows: [
+        { id: 1, user_id: 1, name: 'Pizza Test 1', total_count: 2 },
+        { id: 2, user_id: 1, name: 'Pizza Test 2', total_count: 2 },
+      ]
+    };
+
+    const expectedResponse = {
+      page: 1,
+      limit: 5,
+      totalCount: 2,
+      totalPages: 1,
+      data: mockData.rows,
+    };
+
+    models.User.getUserLists.mockResolvedValueOnce(mockData);
+
+    await controllers.User.getUserLists(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(expectedResponse);
+  });
+
+  it('should return a 500 status code when error is thrown', async () => {
+    const mockError = new Error('Mocked error message');
+
+    models.User.getUserLists.mockRejectedValueOnce(mockError);
+
+    await controllers.User.getUserLists(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+  });
+
 });
