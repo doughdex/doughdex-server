@@ -1,4 +1,4 @@
-const { db } = require('../db');
+const db = require('../db');
 const { setOffset } = require('./helpers');
 
 const getPlaces = (page, limit) => {
