@@ -1,11 +1,10 @@
-const { mdoels } = require('../models');
-const { decodeToken } = require('../middleware');
+const { models } = require('../models');
+const { createPaginationLinks } = require('./helpers');
 
 const getPlaces = async (req, res) => {
-
   try {
-    const page = parseInt(req.query?.page) || 1;
-    const limit = parseInt(req.query?.limit) || 10;
+    const page = parseInt(req.query?.page) >= 1 ? req.query.page : 1;
+    const limit = parseInt(req.query?.limit) >= 1 ? req.query.limit : 10;
     const result = await models.Place.getPlaces(page, limit);
     const data = result.rows;
     const totalCount = parseInt(data[0].total_count, 10);
@@ -20,10 +19,11 @@ const getPlaces = async (req, res) => {
       links,
       data
     };
+
     res.status(200).send(response);
   } catch (error) {
     console.error('Error retrieving places:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -35,7 +35,7 @@ const getPlaceById = async (req, res) => {
     res.status(200).send(data);
   } catch (error) {
     console.error('Error retrieving place data:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
