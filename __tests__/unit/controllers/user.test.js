@@ -318,9 +318,111 @@ describe('createUser', () => {
 
 describe('updateUser', () => {
 
+  beforeAll(() => {
+    consoleError = console.error;
+    console.error = jest.fn();
+  });
+
+  beforeEach(() => {
+    req = {
+      params: {},
+      body: {},
+      user: {},
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn(),
+    };
+  });
+
+  afterAll(() => {
+    console.error = consoleError;
+    server.close();
+  });
+
+  it('should return a 200 status code and data upon successful record update with valid inputs', async () => {
+
+    req.params.user_id = 1;
+    req.user.id = 1;
+
+    req.body = {
+      name: 'success',
+      email: 'new@email.com',
+    };
+
+    const mockData = {
+      rows: [
+        { id: 1, name: 'success' }
+      ]
+    };
+
+    models.User.updateUser.mockResolvedValueOnce(mockData);
+    const expectedResponse = mockData.rows[0];
+
+    await controllers.User.updateUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(expectedResponse);
+  });
+
+  it('should return a 500 status code when error is thrown', async () => {
+    const mockError = new Error('Mocked error message');
+
+    models.User.updateUser.mockRejectedValueOnce(mockError);
+
+    await controllers.User.updateUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+  });
 });
 
 describe('deleteUser', () => {
+
+  beforeAll(() => {
+    consoleError = console.error;
+    console.error = jest.fn();
+  });
+
+  beforeEach(() => {
+    req = {
+      params: {},
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+      end: jest.fn(),
+    };
+  });
+
+  afterAll(() => {
+    console.error = consoleError;
+    server.close();
+  });
+
+  it('should return a 204 status code upon successful record deletion', async () => {
+
+      req.params.user_id = 1;
+
+      await controllers.User.deleteUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(204);
+      expect(res.end).toHaveBeenCalled();
+  });
+
+  it('should return a 500 status code when error is thrown', async () => {
+    const mockError = new Error('Mocked error message');
+
+    models.User.deleteUser.mockRejectedValueOnce(mockError);
+
+    await controllers.User.deleteUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+  });
 
 });
 

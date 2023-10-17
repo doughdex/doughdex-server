@@ -63,43 +63,33 @@ const updateUser = async (req, res) => {
   const userId = req.params.user_id;
   const updateData = req.body;
 
-  if (req.user.id === userId) {
-    try {
-      const queryParts = [];
-      const queryValues = [];
+  try {
+    const queryParts = [];
+    const queryValues = [];
 
-      for (const key in updateData) {
-        if (key === 'is_admin' || key === 'is_banned') { continue; }
-        queryParts.push(`${key} = $${queryValues.length + 1}`);
-        queryValues.push(updateData[key]);
-      }
-
-      const result = await models.User.updateUser(queryParts, queryValues);
-      const data = result.rows[0];
-      res.status(200).send(data);
-    } catch (error) {
-      console.error('Error updating user:', error);
-      res.status(500).json({ message: 'Internal server error' });
+    for (const key in updateData) {
+      if (key === 'is_admin' || key === 'is_banned') { continue; }
+      queryParts.push(`${key} = $${queryValues.length + 1}`);
+      queryValues.push(updateData[key]);
     }
-  } else {
-    res.status(403).json({ message: 'Unauthorized' });
+
+    const result = await models.User.updateUser(queryParts, queryValues);
+    const data = result.rows[0];
+    res.status(200).send(data);
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 const deleteUser = async (req, res) => {
-  // Current user or admin only
-  if (req.is_admin || req.user.id === req.params.user_id) {
-    try {
-      await models.User.deleteUser(req.params.user_id);
-      res.status(204).end();
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  } else {
-    res.status(403).json({ message: 'Unauthorized' });
+  try {
+    await models.User.deleteUser(req.params.user_id);
+    res.status(204).end();
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-
 };
 
 const getUserLists = async (req, res) => {
