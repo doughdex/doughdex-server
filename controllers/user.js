@@ -93,6 +93,7 @@ const deleteUser = async (req, res) => {
 };
 
 const getUserLists = async (req, res) => {
+  // Todo: don't return lists if user is private, unless user is requesting their own lists. Don't return lists if user is banned.
   try {
     const page = parseInt(req.query?.page) >= 1 ? parseInt(req.query.page) : 1;
     const limit = parseInt(req.query?.limit) >= 1 ? parseInt(req.query.limit) : 5;
