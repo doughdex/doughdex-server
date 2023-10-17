@@ -46,6 +46,9 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+  if (!req.body.uid || !req.body.email || !req.body.name) {
+    res.status(400).json({ message: 'Missing required fields' });
+  }
   try {
     const result = await models.User.createUser(req.body);
     const data = result.rows[0];

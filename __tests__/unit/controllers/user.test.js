@@ -241,8 +241,78 @@ describe('getUserById', () => {
   });
 });
 
-
 describe('createUser', () => {
+
+  beforeAll(() => {
+    consoleError = console.error;
+    console.error = jest.fn();
+  });
+
+  beforeEach(() => {
+    req = {
+      body: {},
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn(),
+    };
+  });
+
+  afterAll(() => {
+    console.error = consoleError;
+    server.close();
+  });
+
+  it('should return a 201 status code and data upon successful record creation with valid inputs', async () => {
+
+    req.body = {
+      uid: 'abcd1234',
+      name: 'success',
+      email: 'test@test.com'
+    }
+
+    const mockData = {
+      rows: [
+        { id: 1, name: 'success' }
+      ]
+    };
+
+    models.User.createUser.mockResolvedValueOnce(mockData);
+    const expectedResponse = mockData.rows[0];
+
+    await controllers.User.createUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.send).toHaveBeenCalledWith(expectedResponse);
+  });
+
+  it('should return a 500 status code when error is thrown', async () => {
+
+    const mockError = new Error('Mocked error message');
+
+    models.User.createUser.mockRejectedValueOnce(mockError);
+
+    await controllers.User.createUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+
+  });
+
+  it('should return a 400 status code when invalid inputs are provided', async () => {
+
+    req.body = {
+      uid: 'abcd1234',
+      name: 'success',
+    }
+
+    await controllers.User.createUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Missing required fields' });
+  });
 
 });
 
