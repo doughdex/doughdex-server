@@ -170,7 +170,7 @@ describe('List Model', () => {
     });
   });
 
-  describe('deleteSpotFromList', () => {
+  describe('removeSpotFromList', () => {
     it('should generate and execute a valid query', () => {
 
       const listId = '12345';
@@ -181,7 +181,7 @@ describe('List Model', () => {
         values: [listId, placeId]
       };
 
-      models.List.deleteSpotFromList(listId, placeId);
+      models.List.removeSpotFromList(listId, placeId);
 
       expect(db.query).toHaveBeenCalledWith(mockedQuery);
     });

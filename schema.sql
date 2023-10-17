@@ -62,7 +62,7 @@ CREATE TABLE activity (
 -- Lists Table
 CREATE TABLE lists (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
+    user_id INT REFERENCES users(id) NOT NULL,
     name VARCHAR(255) NOT NULL,
     is_ordered BOOLEAN DEFAULT false,
     is_private BOOLEAN DEFAULT false,

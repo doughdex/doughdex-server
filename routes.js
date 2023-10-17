@@ -20,7 +20,7 @@ router.get('/lists/:list_id', (req, res, next) => middleware.validateUserOwnersh
 router.post('/lists', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.createList);
 router.post('/lists/:list_id/spots', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.addSpotToList);
 router.delete('/list/:list_id/', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.deleteList);
-router.delete('/list/:list_id/spots/:spot_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.deleteSpotFromList);
+router.delete('/list/:list_id/spots/:spot_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.removeSpotFromList);
 
 // Admin Routes (FUTURE)
 

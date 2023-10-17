@@ -93,7 +93,7 @@ const addSpotToList = (listId, placeId) => {
   return db.query(query);
 };
 
-const deleteSpotFromList = (listId, placeId) => {
+const removeSpotFromList = (listId, placeId) => {
   query = {
     text: 'DELETE FROM list_places WHERE list_id = $1 AND place_id = $2',
     values: [listId, placeId]
@@ -111,5 +111,5 @@ module.exports = {
   deleteList,
   addSpotToList,
   deleteAllSpotsFromList,
-  deleteSpotFromList,
+  removeSpotFromList,
 }

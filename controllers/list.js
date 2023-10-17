@@ -67,8 +67,6 @@ const updateList = async (req, res) => {
       queryValues.push(updateData[key]);
     }
 
-    console.log(queryParts, queryValues);
-
     const result = await models.List.updateList(listId, queryParts, queryValues);
     const data = result.rows[0];
     res.status(200).send(data);
@@ -79,7 +77,6 @@ const updateList = async (req, res) => {
 };
 
 const deleteList = async (req, res) => {
-  // TODO: only list creator should be able to delete list
   try {
     const listId = req.params.list_id;
     await models.List.deleteAllSpotsFromList(listId);
@@ -109,7 +106,7 @@ const removeSpotFromList = async (req, res) => {
   try {
     const placeId = req.params.spot_id;
     const listId = req.params.list_id;
-    await models.List.deleteSpotFromList(listId, placeId);
+    await models.List.removeSpotFromList(listId, placeId);
     res.status(204).end();
   } catch (error) {
     console.error('Error deleting spot from list', error);
@@ -128,6 +125,6 @@ module.exports = {
   updateList,
   deleteList,
   addSpotToList,
-  updateSpotInList,
   removeSpotFromList,
+  updateSpotInList,
 }
