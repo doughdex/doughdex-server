@@ -13,7 +13,7 @@ const getUsers = (page, limit) => {
 
 const getUserById = (userId) => {
   const query = {
-    text: 'SELECT id, name, display_name, email, location, bio, avatar_url FROM users WHERE id = $1 AND is_private = false AND is_banned = false',
+    text: 'SELECT id, name, display_name, email, location, bio, avatar_url FROM users WHERE id = $1 AND is_banned = false',
     values: [userId]
   }
   return db.query(query);
