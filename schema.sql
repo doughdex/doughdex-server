@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS users;
 -- Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    uid VARCHAR,
+    uid VARCHAR NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     display_name VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -24,7 +24,7 @@ CREATE TABLE users (
     is_banned BOOLEAN DEFAULT false,
     is_private BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    last_login_at TIMESTAMPTZ DEFAULT NOW(),
+    last_login_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Places Table
@@ -67,7 +67,6 @@ CREATE TABLE lists (
     is_ordered BOOLEAN DEFAULT false,
     is_private BOOLEAN DEFAULT false,
     is_flagged BOOLEAN DEFAULT false,
-    is_visible BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
