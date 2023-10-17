@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use(morgan(':method :url :status - :response-time ms :remote-addr'));
 
-app.use(authenticateRequestor);
+app.use((req, res, next) => authenticateRequestor(req, res, next));
 app.get('/', (req, res) => {
   res.send('Hello world.');
 });

@@ -3,10 +3,17 @@ const { controllers } = require('../../../controllers');
 const { models } = require('../../../models')
 const { createPaginationLinks } = require('../../../controllers/helpers')
 
+let req, res, consoleError;
+
 jest.mock('../../../models', () => ({
   models: {
     User: {
       getUsers: jest.fn(),
+      getUserById: jest.fn(),
+      createUser: jest.fn(),
+      updateUser: jest.fn(),
+      deleteUser: jest.fn(),
+      getUserLists: jest.fn(),
     },
   },
 }));
@@ -16,9 +23,6 @@ jest.mock('../../../controllers/helpers', () => ({
 }));
 
 describe('getUsers', () => {
-
-  let req = {};
-  let res = {};
 
   beforeAll(() => {
     consoleError = console.error;
@@ -138,17 +142,118 @@ describe('getUsers', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith(expectedResponse);
   });
+});
+
+describe('getUserById', () => {
+
+  beforeAll(() => {
+    consoleError = console.error;
+    console.error = jest.fn();
+  });
+
+  beforeEach(() => {
+    req = {
+      params: {},
+      user: {},
+    };
+    res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn(),
+    };
+  });
+
+  afterAll(() => {
+    console.error = consoleError;
+    server.close();
+  });
+
+  it('should return a 200 status code and data upon successful operation', async () => {
+
+      req.params.user_id = 1;
+
+      const mockData = {
+        rows: [
+          { id: 1, name: 'success', is_private: false }
+        ]
+      };
+
+      const expectedResponse = mockData.rows[0];
+
+      models.User.getUserById.mockResolvedValueOnce(mockData);
+
+      await controllers.User.getUserById(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.send).toHaveBeenCalledWith(expectedResponse);
+  });
+
+  it('should return a 500 status code when error is thrown', async () => {
+
+    const mockError = new Error('Mocked error message');
+
+    models.User.getUserById.mockRejectedValueOnce(mockError);
+
+    await controllers.User.getUserById(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+  });
+
+  it('should return a 401 status when an unauthorized request is made to a private user', async () => {
+
+    req.params.user_id = 2;
+    req.user.id = 1;
+
+    const mockData = {
+      rows: [
+        { id: 2, name: 'success', is_private: true }
+      ]
+    };
+
+    models.User.getUserById.mockResolvedValueOnce(mockData);
+
+    await controllers.User.getUserById(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Unauthorized' });
+
+  });
+
+  it('should return a 200 status code if request is made by user with same id as :user_id param', async () => {
+
+    req.params.user_id = 1;
+    req.user.id = 1;
+
+    const mockData = {
+      rows: [
+        { id: 1, name: 'success', is_private: true }
+      ]
+    };
+
+    models.User.getUserById.mockResolvedValueOnce(mockData);
+
+    await controllers.User.getUserById(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(mockData.rows[0]);
+
+  });
+});
 
 
-
-
-
-
+describe('createUser', () => {
 
 });
 
-desrcibe('getUserById', () => {
+describe('updateUser', () => {
 
 });
 
+describe('deleteUser', () => {
 
+});
+
+describe('getUsersLists', () => {
+
+});

@@ -30,12 +30,15 @@ const getUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  // TODO: Update so if request is made on behalf of user, returns regardless of private status
   try {
     const result = await models.User.getUserById(req.params.user_id);
     const data = result.rows[0];
-    res.status(200).send(data);
 
+    if (!data.is_private || req.params.user_id === req.user.id) {
+      res.status(200).send(data);
+    } else {
+      res.status(401).json({ message: 'Unauthorized' });
+    }
   } catch (error) {
     console.error('Error retrieving user data:', error);
     res.status(500).json({ message: 'Internal server error' });
