@@ -1,0 +1,52 @@
+[
+  {
+    "list_id": 1,
+    "place_id": 1,
+    "is_completed": false
+  },
+  {
+    "list_id": 1,
+    "place_id": 2,
+    "is_completed": true
+  },
+  {
+    "list_id": 2,
+    "place_id": 3,
+    "is_completed": false
+  },
+  {
+    "list_id": 2,
+    "place_id": 4,
+    "is_completed": true
+  },
+  {
+    "list_id": 3,
+    "place_id": 5,
+    "is_completed": false
+  },
+  {
+    "list_id": 3,
+    "place_id": 6,
+    "is_completed": true
+  },
+  {
+    "list_id": 4,
+    "place_id": 7,
+    "is_completed": false
+  },
+  {
+    "list_id": 4,
+    "place_id": 8,
+    "is_completed": true
+  },
+  {
+    "list_id": 5,
+    "place_id": 9,
+    "is_completed": false
+  },
+  {
+    "list_id": 5,
+    "place_id": 10,
+    "is_completed": true
+  }
+]

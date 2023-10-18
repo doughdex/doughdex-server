@@ -1,0 +1,122 @@
+[
+  {
+    "user_id": 1,
+    "name": "Favorite Spots in NYC",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 2,
+    "name": "Best Pizza Joints in Brooklyn",
+    "is_ordered": false,
+    "is_private": true
+  },
+  {
+    "user_id": 3,
+    "name": "Healthy Pizza Challenge",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 4,
+    "name": "Top Pizza Bars in Miami",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 5,
+    "name": "Outdoor Adventure Bucket List",
+    "is_ordered": false,
+    "is_private": true
+  },
+  {
+    "user_id": 6,
+    "name": "Pizza Galleries to Explore",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 7,
+    "name": "Pizza Events Calendar",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 8,
+    "name": "Family Fun Pizza Plans",
+    "is_ordered": false,
+    "is_private": true
+  },
+  {
+    "user_id": 9,
+    "name": "Historical Pizza Road Trip",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 10,
+    "name": "Gourmet Pizza Tasting",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 1,
+    "name": "Hidden Pizza in NYC",
+    "is_ordered": false,
+    "is_private": true
+  },
+  {
+    "user_id": 2,
+    "name": "Classic Pizza Quest",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 3,
+    "name": "Vegan Pizza Exploration",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 4,
+    "name": "Latin Jazz Pizza in Miami",
+    "is_ordered": false,
+    "is_private": true
+  },
+  {
+    "user_id": 5,
+    "name": "Hiking Pizza Challenge",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 6,
+    "name": "Modern Pizza Marvels",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 7,
+    "name": "Pizza Meetups Calendar",
+    "is_ordered": false,
+    "is_private": true
+  },
+  {
+    "user_id": 8,
+    "name": "Carnival Pizza Weekend",
+    "is_ordered": true,
+    "is_private": false
+  },
+  {
+    "user_id": 9,
+    "name": "Civil Pizza History Tour",
+    "is_ordered": false,
+    "is_private": true
+  },
+  {
+    "user_id": 10,
+    "name": "Pizza Margherita vs. Pepperoni",
+    "is_ordered": true,
+    "is_private": false
+  }
+]
