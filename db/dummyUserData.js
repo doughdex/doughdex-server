@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
+  database: process.env.PGDATABASE + '_test',
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT,
 });
@@ -14,6 +14,7 @@ const insertDummyUsers = async (count) => {
   try {
     const client = await pool.connect();
     for (let i = 0; i < count; i++) {
+      const uid = i;
       const display_name = faker.person.firstName();
       const lastName = faker.person.lastName();
       const name = display_name + ' ' + lastName;
@@ -25,9 +26,9 @@ const insertDummyUsers = async (count) => {
       const isPrivate = faker.datatype.boolean({ probability: 0.25 });
 
       const query = {
-        text: `INSERT INTO users (name, display_name, email, location, timezone, bio, avatar_url, is_private)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        values: [name, display_name, email, location, timezone, bio, avatarUrl, isPrivate],
+        text: `INSERT INTO users (uid, name, display_name, email, location, timezone, bio, avatar_url, is_private)
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        values: [uid, name, display_name, email, location, timezone, bio, avatarUrl, isPrivate],
       };
 
       await client.query(query);
