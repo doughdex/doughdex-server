@@ -27,4 +27,5 @@ app.all('*', (req, res) => {
 const PORT = process.env.PORT || 3001;
 
 module.exports.server = app.listen(PORT);
+module.exports.app = app;
 console.log(`Listening on port ${PORT}`);

@@ -30,4 +30,8 @@ router.delete('/list/:list_id/spots/:spot_id', (req, res, next) => middleware.va
 
 // Flags routes (FUTURE)
 
+router.get('/check', (req, res) => {
+  res.status(204).end();
+});
+
 module.exports = router;
