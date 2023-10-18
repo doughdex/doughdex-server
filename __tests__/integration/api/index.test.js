@@ -1,6 +1,5 @@
 const request = require('supertest');
-const { testSession } = require('../helpers');
-const { server } = require('../../../app');
+const { app, server } = require('../../../app');
 
 describe('/api/check', () => {
 
@@ -9,6 +8,6 @@ describe('/api/check', () => {
   });
 
   it('returns success', async () => {
-    await testSession.get('/api/check').expect(204);
+    await request(app).get('/api/check').expect(204);
   });
 });

@@ -1,6 +1,5 @@
 const request = require('supertest');
-const { testSession } = require('../helpers');
-const { server } = require('../../../app');
+const { app, server } = require('../../../app');
 
 describe('/api/users', () => {
 
@@ -10,10 +9,18 @@ describe('/api/users', () => {
 
   describe('GET /users', () => {
 
-    it('should return', async () => {
-      await testSession
+    it('should return a list of users', async () => {
+      const response = await request(app)
         .get('/api/users')
-        .expect(200);
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toHaveProperty('page');
+      expect(response.body).toHaveProperty('limit');
+      expect(response.body).toHaveProperty('totalCount');
+      expect(response.body).toHaveProperty('totalPages');
+      expect(response.body).toHaveProperty('links');
+      expect(response.body.data.length).toBeTruthy();
     });
 
   });

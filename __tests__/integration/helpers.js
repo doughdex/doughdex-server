@@ -1,12 +1,8 @@
 require('dotenv').config();
 process.env.NODE_ENV = 'test';
-const { app } = require('../../app');
-const session = require('supertest-session');
 const path = require('path');
 const db = require('../../db');
 const fs = require('fs');
-
-const testSession = session(app);
 
 const resetDatabse = async () => {
   const schemaSQL = fs.readFileSync(process.env.SCHEMA_PATH).toString();
@@ -121,7 +117,6 @@ afterAll(async () => {
 });
 
 module.exports = {
-  testSession,
   loadUserFixtures,
   loadPlacesFixtures,
   loadListsFixtures,
