@@ -133,7 +133,7 @@ describe('getUsers', () => {
     };
 
     req.query.page = -1;
-    req.query.limt = -2;
+    req.query.limit = -2;
 
     models.User.getUsers.mockResolvedValueOnce(mockData);
 
@@ -365,6 +365,31 @@ describe('updateUser', () => {
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith(expectedResponse);
+  });
+
+  it('should ignore is_admin and is_banned fields when provided in request body', async () => {
+
+    req.params.user_id = 1;
+
+    req.body = {
+      name: 'updated',
+      is_admin: true,
+      is_banned: false,
+    };
+
+    const mockData = {
+      rows: [
+        { id: 1, name: 'success' }
+      ]
+    };
+
+    models.User.updateUser.mockResolvedValueOnce(mockData);
+
+    await controllers.User.updateUser(req, res);
+
+    expect(models.User.updateUser).toHaveBeenCalledWith(1, ['name = $1'], ['updated']);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(mockData.rows[0]);
   });
 
   it('should return a 500 status code when error is thrown', async () => {
