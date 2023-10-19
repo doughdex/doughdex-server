@@ -1,7 +1,7 @@
 const { server } = require('../../../app');
 const { controllers } = require('../../../controllers');
 const { models } = require('../../../models')
-const { createPaginationLinks } = require('../../../controllers/helpers')
+const { createPaginationLinks, isValidEmail, isUniqueUid, isUniqueEmail } = require('../../../controllers/helpers')
 
 let req, res, consoleError;
 
@@ -20,6 +20,9 @@ jest.mock('../../../models', () => ({
 
 jest.mock('../../../controllers/helpers', () => ({
   createPaginationLinks: jest.fn().mockReturnValue({}),
+  isValidEmail: jest.fn().mockReturnValue(true),
+  isUniqueUid: jest.fn().mockReturnValue(true),
+  isUniqueEmail: jest.fn().mockReturnValue(true),
 }));
 
 describe('getUsers', () => {
@@ -291,6 +294,12 @@ describe('createUser', () => {
   });
 
   it('should return a 500 status code when error is thrown', async () => {
+
+    req.body = {
+      uid: 'abcd1234',
+      name: 'success',
+      email: 'email@emai.com',
+    }
 
     const mockError = new Error('Mocked error message');
 

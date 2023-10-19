@@ -10,7 +10,9 @@ const app = express();
 
 app.use(express.json());
 
-app.use(morgan(':method :url :status - :response-time ms :remote-addr'));
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan(':method :url :status - :response-time ms :remote-addr'));
+}
 
 app.use((req, res, next) => authenticateRequestor(req, res, next));
 app.get('/', (req, res) => {

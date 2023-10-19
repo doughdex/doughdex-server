@@ -7,7 +7,6 @@ const parseToken = (req) => {
 };
 
 const getRequestorUserDetails = async (decodedToken) => {
-  console.log(decodedToken.uid)
   const userQuery = {
     'text': 'SELECT * FROM users WHERE uid = $1',
     'values': [decodedToken.uid],

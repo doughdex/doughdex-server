@@ -1,4 +1,5 @@
 require('dotenv').config();
+const db = require('../db');
 
 const createPaginationLinks = (req, page, limit, totalPages) => {
 
@@ -22,4 +23,39 @@ const createPaginationLinks = (req, page, limit, totalPages) => {
 
 };
 
-module.exports = { createPaginationLinks };
+const isUniqueUid = async (value) => {
+  const query = {
+    text: 'SELECT COUNT(*) FROM users WHERE uid = $1',
+    values: [value]
+  };
+
+  const result = await db.query(query);
+
+  return result.rows[0].count === '0' ? true : false;
+};
+
+const isUniqueEmail = async (value) => {
+  const query = {
+    text: 'SELECT COUNT(*) FROM users WHERE email = $1',
+    values: [value]
+  };
+
+  const result = await db.query(query);
+
+  return result.rows[0].count === '0' ? true : false;
+};
+
+const isValidEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
+
+module.exports = {
+  createPaginationLinks,
+  isUniqueUid,
+  isUniqueEmail,
+  isValidEmail,
+ };

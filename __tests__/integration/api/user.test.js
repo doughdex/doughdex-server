@@ -141,10 +141,147 @@ describe('/api/users', () => {
 
   describe('POST /users', () => {
 
-    it('should be true', () => {
+    it('should create a new user and return a 201 status and user data when provided valid inputs', async () => {
+      const testUser = {
+        uid: 'testuid',
+        email: 'test@test.com',
+        name: 'Test User'
+      };
+
+      const response = await request(app)
+        .post('/api/users')
+        .send(testUser)
+        .set({'content-type': 'application/json'})
+        .expect(201)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toBeTruthy();
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('uid');
+      expect(response.body).toHaveProperty('email');
+      expect(response.body).toHaveProperty('name');
+      expect(response.body).toHaveProperty('display_name');
+      expect(response.body).toHaveProperty('location');
+      expect(response.body).toHaveProperty('timezone');
+      expect(response.body).toHaveProperty('bio');
+      expect(response.body).toHaveProperty('avatar_url');
+      expect(response.body).toHaveProperty('is_banned');
+      expect(response.body).toHaveProperty('is_private');
+      expect(response.body).toHaveProperty('created_at');
+      expect(response.body).toHaveProperty('last_login_at');
+      expect(response.body.uid).toBe(testUser.uid);
+      expect(response.body.email).toBe(testUser.email);
+      expect(response.body.name).toBe(testUser.name);
+      expect(response.body.display_name).toBe(testUser.name);
+      expect(response.body.location).toBeNull();
+      expect(response.body.timezone).toBeNull();
+      expect(response.body.bio).toBeNull();
+      expect(response.body.avatar_url).toBeNull();
+      expect(response.body.is_banned).toBe(false);
+      expect(response.body.is_private).toBe(false);
+      expect(response.body.created_at).toBeTruthy();
+      expect(response.body.last_login_at).toBeTruthy();
+    });
+
+    it('should return a 400 error if uid is missing', async () => {
+      const testUser = {
+        email: 'test@test.com',
+        name: 'Test User'
+      };
+
+      const response = await request(app)
+        .post('/api/users')
+        .send(testUser)
+        .set({'content-type': 'application/json'})
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Missing required fields' });
 
     });
 
+    it('should return a 400 error if email is missing', async () => {
+      const testUser = {
+        uid: 'testuid',
+        name: 'Test User'
+      };
+
+      const response = await request(app)
+        .post('/api/users')
+        .send(testUser)
+        .set({'content-type': 'application/json'})
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Missing required fields' });
+    });
+
+    it('should return a 400 error if name is missing', async () => {
+      const testUser = {
+        uid: 'testuid',
+        email: 'test@test.com',
+      };
+
+      const response = await request(app)
+        .post('/api/users')
+        .send(testUser)
+        .set({'content-type': 'application/json'})
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Missing required fields' });
+    });
+
+    it('should return a 400 error if the email is invalid', async () => {
+      const testUser = {
+        uid: 'testuid',
+        email: 'testtest.com',
+        name: 'Test User'
+      };
+
+      const response = await request(app)
+        .post('/api/users')
+        .send(testUser)
+        .set({'content-type': 'application/json'})
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Invalid email address' });
+    });
+
+    it('should return a 400 error if the uid is already in use', async () => {
+      const testUser = {
+        uid: 'user1',
+        email: 'test1@test.com',
+        name: 'Test User 1'
+      };
+
+      const response = await request(app)
+      .post('/api/users')
+      .send(testUser)
+      .set({'content-type': 'application/json'})
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Uid already in use' });
+    });
+
+    it('should return a 400 error if the email is already in use', async () => {
+      const testUser = {
+        uid: 'testuid2',
+        email: 'john.doe@example.com',
+        name: 'Test User 1'
+      };
+
+      const response = await request(app)
+        .post('/api/users')
+        .send(testUser)
+        .set({'content-type': 'application/json'})
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Email already in use' });
+    });
   });
 
   describe('PUT /users/:user_id', () => {

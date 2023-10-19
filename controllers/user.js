@@ -1,6 +1,6 @@
 const { models } = require('../models');
 const { decodeToken } = require('../middleware');
-const { createPaginationLinks } = require('./helpers');
+const { createPaginationLinks, isUniqueUid, isUniqueEmail, isValidEmail } = require('./helpers');
 
 const getUsers = async (req, res) => {
 
@@ -58,9 +58,30 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+
   if (!req.body.uid || !req.body.email || !req.body.name) {
     res.status(400).json({ message: 'Missing required fields' });
+    return;
   }
+
+  if (!isValidEmail(req.body.email)) {
+    res.status(400).json({ message: 'Invalid email address' });
+    return;
+  }
+
+  const uniqueUid = await isUniqueUid(req.body.uid);
+  const uniqueEmail = await isUniqueEmail(req.body.email);
+
+  if (!uniqueUid) {
+    res.status(400).json({ message: 'Uid already in use' });
+    return;
+  }
+
+  if (!uniqueEmail) {
+    res.status(400).json({ message: 'Email already in use' });
+    return;
+  }
+
   try {
     const result = await models.User.createUser(req.body);
     const data = result.rows[0];
