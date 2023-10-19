@@ -2,24 +2,6 @@ const { authenticateRequestor } = require('../../../middleware');
 const db = require('../../../db');
 const { server } = require('../../../app');
 
-jest.mock('firebase-admin/auth', () => {
-  return {
-    getAuth: jest.fn(() => {
-      return {
-        verifyIdToken: jest.fn((token) => {
-          if (token === 'validToken') {
-            return { uid: 'uid123' };
-          } else if (token === 'noUser') {
-            return { uid: 'noUser' };
-          } else {
-            throw new Error('Invalid token');
-          }
-        }),
-      };
-    }),
-  };
-});
-
 jest.mock('../../../db', () => {
   return {
     query: jest.fn((query) => {
@@ -56,10 +38,12 @@ describe('authenticateRequestor', () => {
 
   beforeEach(() => {
     res = {};
-    req = { headers: {}};
-    req.headers = {};
+    req = {
+      headers: {}
+    };
     res.json = jest.fn();
     res.status = jest.fn(() => res);
+    req.get = jest.fn((header) => req.headers[header]);
   });
 
   afterAll(() => {
@@ -72,7 +56,7 @@ describe('authenticateRequestor', () => {
 
     await authenticateRequestor(req, res, next);
 
-    expect(req.user.uid).toEqual('uid123');
+    expect(req.user.uid).toBe('uid123');
     expect(next).toHaveBeenCalled();
   });
 

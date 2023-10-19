@@ -3,8 +3,10 @@ process.env.NODE_ENV = 'test';
 const path = require('path');
 const db = require('../../db');
 const fs = require('fs');
+const { firebase } = require('../../app.js');
+const admin = require('firebase-admin');
 
-const resetDatabse = async () => {
+const resetDatabase = async () => {
   const schemaSQL = fs.readFileSync(process.env.SCHEMA_PATH).toString();
   await db.query(schemaSQL);
 };
@@ -104,8 +106,14 @@ const loadListPlacesFixtures = async () => {
   }
 };
 
+const mintCustomToken = async (uid, email) => {
+  const customToken = await admin.auth().createCustomToken(uid, { email });
+  const idToken = await admin.auth().verifyIdToken(customToken);
+  return customToken;
+};
+
 beforeEach(async () => {
-  await resetDatabse();
+  await resetDatabase();
   await loadUserFixtures();
   await loadPlacesFixtures();
   await loadListsFixtures();
@@ -117,8 +125,10 @@ afterAll(async () => {
 });
 
 module.exports = {
+  resetDatabase,
   loadUserFixtures,
   loadPlacesFixtures,
   loadListsFixtures,
   loadListPlacesFixtures,
+  mintCustomToken,
 }

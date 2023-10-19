@@ -4,8 +4,8 @@ const { getAuth } = require('firebase-admin/auth');
 const { parseToken, getRequestorUserDetails } = require('./helpers');
 
 const authenticateRequestor = async (req, res, next) => {
+  const token = parseToken(req);
   try {
-    const token = parseToken(req);
 
     if (!token) {
       req.user = null;

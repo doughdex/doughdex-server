@@ -9,7 +9,8 @@ const getUsers = async (req, res) => {
     const limit = parseInt(req.query?.limit) >= 1 ? parseInt(req.query.limit) : 10;
     const result = await models.User.getUsers(page, limit);
     const data = result.rows;
-    const totalCount = parseInt(data[0].total_count, 10);
+
+    const totalCount = parseInt(data[0]?.total_count, 10) || 0;
     const totalPages = Math.ceil(totalCount / limit);
     const links = createPaginationLinks(req, page, limit, totalPages);
 
@@ -30,11 +31,22 @@ const getUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
+
+  if (!parseInt(req.params.user_id)) {
+    res.status(400).json({ message: 'Invalid user id' });
+    return;
+  }
+
   try {
     const result = await models.User.getUserById(req.params.user_id);
-    const data = result.rows[0];
+    const data = result.rows.length ? result.rows[0] : null;
 
-    if (!data.is_private || req.params.user_id === req.user.id) {
+    if (!data) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    if (!data.is_private || parseInt(req.params.user_id) === req.user?.id) {
       res.status(200).send(data);
     } else {
       res.status(401).json({ message: 'Unauthorized' });

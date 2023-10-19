@@ -25,7 +25,7 @@ describe('User Model', () => {
       limit = 5;
 
       mockedQuery = {
-        text: 'SELECT id, name, display_name, email, location, bio, avatar_url, COUNT(*) OVER() as total_count FROM users WHERE is_private = false AND is_banned = false LIMIT $1 OFFSET $2',
+        text: 'SELECT id, name, display_name, email, location, bio, avatar_url, timezone, is_private, is_banned, COUNT(*) OVER() as total_count FROM users WHERE is_private = false AND is_banned = false LIMIT $1 OFFSET $2',
         values: [limit, 0]
       };
 
@@ -44,7 +44,7 @@ describe('User Model', () => {
       const userId = '12345';
 
       mockedQuery = {
-        text: 'SELECT id, name, display_name, email, location, bio, avatar_url FROM users WHERE id = $1 AND is_banned = false',
+        text: 'SELECT * FROM users WHERE id = $1 AND is_banned = false',
         values: [userId]
       };
 

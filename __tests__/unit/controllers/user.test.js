@@ -192,6 +192,8 @@ describe('getUserById', () => {
 
     const mockError = new Error('Mocked error message');
 
+    req.params.user_id = 1;
+
     models.User.getUserById.mockRejectedValueOnce(mockError);
 
     await controllers.User.getUserById(req, res);
