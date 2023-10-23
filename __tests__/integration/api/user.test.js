@@ -470,27 +470,6 @@ describe('/api/users', () => {
 
     let testToken;
 
-<<<<<<< HEAD
-    beforeEach(() => {
-      testToken = 'user1Token';
-    });
-
-    it('should return lists for a user upon valid request', async () => {
-      const response = await request(app)
-        .get('/api/users/1/lists')
-        .set({ 'Authorization': `Bearer ${testToken}` })
-        .expect(200)
-        .expect('Content-Type', /json/);
-
-      expect(response.body).toBeTruthy();
-      expect(response.body.data).toBeTruthy();
-      expect(response.body.data[0]).toHaveProperty('id');
-      expect(response.body.data[0]).toHaveProperty('name');
-      expect(response.body.data[0]).toHaveProperty('total_count');
-      expect(response.body.data.length).toBe(parseInt(response.body.data[0].total_count));
-    });
-
-=======
     it('should return lists for a user upon valid request', async () => {
       testToken = 'user1Token';
       const response = await request(app)
@@ -507,7 +486,6 @@ describe('/api/users', () => {
       expect(response.body.data.length).toBe(parseInt(response.body.data[0].total_count));
     });
 
->>>>>>> loginuser
     it('should return only public lists for a user if the requesting user is not the owner', async () => {
       testToken = 'user2Token';
 
@@ -560,8 +538,6 @@ describe('/api/users', () => {
 
       expect(response.body).toEqual({ message: 'User not found' });
     });
-<<<<<<< HEAD
-=======
   });
 
   describe('PUT /users/:user_id/login', () => {
@@ -616,6 +592,5 @@ describe('/api/users', () => {
 
       expect(response.body).toEqual({ message: 'Unauthorized' });
     });
->>>>>>> loginuser
   });
 });
