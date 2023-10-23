@@ -378,14 +378,14 @@ describe('updateUser', () => {
     expect(res.send).toHaveBeenCalledWith(expectedResponse);
   });
 
-  it('should ignore is_admin and is_banned fields when provided in request body', async () => {
+  it('should ignore is_admin and uid fields when provided in request body', async () => {
 
     req.params.user_id = 1;
 
     req.body = {
       name: 'updated',
       is_admin: true,
-      is_banned: false,
+      uid: 'hello',
     };
 
     const mockData = {
