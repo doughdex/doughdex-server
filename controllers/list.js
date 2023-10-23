@@ -4,11 +4,11 @@ const { createPaginationLinks } = require('./helpers');
 
 const getLists = async (req, res) => {
   try {
-    const page = parseInt(req.query?.page) || 1;
-    const limit = parseInt(req.query?.limit) || 10;
+    const page = parseInt(req.query?.page) >= 1 ? req.query.page : 1;
+    const limit = parseInt(req.query?.limit) >= 1 ? req.query.limit : 10;
     const result = await models.List.getLists(page, limit);
     const data = result.rows;
-    const totalCount = parseInt(data[0].total_count, 10);
+    const totalCount = parseInt(data[0]?.total_count, 10) || 0;
     const totalPages = Math.ceil(totalCount / limit);
     const links = createPaginationLinks(req, page, limit, totalPages);
 

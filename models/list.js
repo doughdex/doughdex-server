@@ -4,7 +4,19 @@ const { setOffset } = require('./helpers');
 const getLists = (page, limit) => {
   const offset = setOffset(page, limit);
   const query = {
-    text: 'SELECT id, user_id, name, created_at FROM lists WHERE is_private = false AND is_visible = TRUE AND is_flagged = false ORDER BY created_at DESC LIMIT $1 OFFSET $2',
+    text: `
+      SELECT
+        l.*
+      FROM lists AS l
+      JOIN users AS u ON l.user_id = u.id
+      WHERE u.is_archived = false
+        AND u.is_banned = false
+        AND u.is_private = false
+        AND l.is_flagged = false
+        AND l.is_private = false
+      ORDER BY l.created_at DESC
+      LIMIT $1
+      OFFSET $2`,
     values: [limit, offset]
   };
   return db.query(query);
@@ -41,10 +53,13 @@ const getListById = (listId) => {
       FROM lists AS l
       JOIN list_places AS lp ON l.id = lp.list_id
       JOIN places AS p ON lp.place_id = p.id
+      JOIN users AS u ON l.user_id = u.id
       WHERE l.id = $1
         AND l.is_private = false
         AND l.is_flagged = false
-        AND l.is_visible = true
+        AND u.is_archived = false
+        AND u.is_banned = false
+        AND u.is_private = false
       ORDER BY lp.position DESC
     `,
     values: [listId]

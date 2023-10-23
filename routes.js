@@ -20,8 +20,9 @@ router.get('/places/details/:google_places_id', controllers.Place.getGooglePlace
 router.get('/lists', controllers.List.getLists);
 router.get('/lists/:list_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.getListById);
 router.post('/lists', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.createList);
+router.put('/lists', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.updateList);
 router.post('/lists/:list_id/spots', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.addSpotToList);
-router.delete('/list/:list_id/', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.deleteList);
+router.delete('/list/:list_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.deleteList);
 router.delete('/list/:list_id/spots/:spot_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.List.removeSpotFromList);
 
 // Admin Routes (FUTURE)
