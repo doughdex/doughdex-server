@@ -1,6 +1,6 @@
 const { models } = require('../models');
 const { decodeToken } = require('../middleware');
-const { createPaginationLinks, isUniqueUid, isUniqueEmail, isValidEmail } = require('./helpers');
+const { createPaginationLinks, isUniqueUid, isUniqueEmail, isValidEmail, isUserVisible } = require('./helpers');
 
 const getUsers = async (req, res) => {
 
@@ -140,21 +140,30 @@ const deleteUser = async (req, res) => {
 };
 
 const getUserLists = async (req, res) => {
-  // Todo: don't return lists if user is private, unless user is requesting their own lists. Don't return lists if user is banned.
+
+  const isUser = parseInt(req.params.user_id) === parseInt(req.user?.id) ? true : false;
+  const userVisibility = await isUserVisible(req.params.user_id);
+
+  if (!isUser && !userVisibility) {
+    res.status(404).json({ message: 'User not found' });
+    return;
+  }
+
   try {
     const page = parseInt(req.query?.page) >= 1 ? parseInt(req.query.page) : 1;
     const limit = parseInt(req.query?.limit) >= 1 ? parseInt(req.query.limit) : 5;
-    const result = await models.User.getUserLists(req.params.user_id, page, limit);
-
+    const result = await models.User.getUserLists(req.params.user_id, page, limit, isUser);
     const data = result.rows;
     const totalCount = parseInt(data[0]?.total_count, 10) || 0;
     const totalPages = Math.ceil(totalCount / limit) || 0;
+    const links = createPaginationLinks(req, page, limit, totalPages);
 
     const response = {
       page,
       limit,
       totalCount,
       totalPages,
+      links,
       data
     }
     res.status(200).send(response);

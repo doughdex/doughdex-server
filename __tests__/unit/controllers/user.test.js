@@ -23,6 +23,7 @@ jest.mock('../../../controllers/helpers', () => ({
   isValidEmail: jest.fn().mockReturnValue(true),
   isUniqueUid: jest.fn().mockReturnValue(true),
   isUniqueEmail: jest.fn().mockReturnValue(true),
+  isUserVisible: jest.fn().mockReturnValue(true),
 }));
 
 describe('getUsers', () => {
@@ -506,6 +507,7 @@ describe('getUsersLists', () => {
       limit: 5,
       totalCount: 2,
       totalPages: 1,
+      links: {},
       data: mockData.rows,
     };
 
@@ -535,6 +537,7 @@ describe('getUsersLists', () => {
       limit: 5,
       totalCount: 2,
       totalPages: 1,
+      links: {},
       data: mockData.rows,
     };
 

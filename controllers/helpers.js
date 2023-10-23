@@ -53,9 +53,20 @@ const isValidEmail = (email) => {
     );
 };
 
+const isUserVisible = async (userId) => {
+  const query = {
+    text: 'SELECT COUNT(*) FROM users WHERE id = $1 AND is_archived = false AND is_banned = false AND is_private = false',
+    values: [userId],
+  };
+  const response = await db.query(query);
+
+  return response.rows[0].count === '1' ? true : false;
+};
+
 module.exports = {
   createPaginationLinks,
   isUniqueUid,
   isUniqueEmail,
   isValidEmail,
+  isUserVisible,
  };

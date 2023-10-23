@@ -44,11 +44,19 @@ const deleteUser = (userId) => {
   return db.query(query);
 };
 
-const getUserLists = (userId, page, limit) => {
+const getUserLists = (userId, page, limit, isUser) => {
   const offset = setOffset(page, limit);
-  const query = {
-    text: 'SELECT l.id AS list_id, l.name AS list_name, lp.place_id, lp.position AS item_position, lp.is_completed AS item_completed, p.name AS place_name, p.address AS place_address, p.city AS place_city, p.state AS place_state, p.loc AS place_loc, p.recommendations AS place_recommendations, p.ratings_counts AS place_ratings_counts, COUNT(*) OVER() as total_count FROM lists as l JOIN list_places AS lp ON l.id = lp.list_id JOIN places AS p ON lp.place_id = p.id WHERE l.user_id = $1 LIMIT $2 OFFSET $3',
-    values: [userId, page, offset]
+  let query;
+  if (isUser) {
+    query = {
+        text: 'SELECT *, COUNT(*) OVER() as total_count FROM lists WHERE lists.user_id = $1 LIMIT $2 OFFSET $3',
+        values: [userId, limit, offset]
+      };
+  } else {
+    query = {
+      text: 'SELECT lists.*, users.*, COUNT(*) OVER() as total_count FROM lists JOIN users ON lists.user_id = users.id WHERE lists.is_flagged = false AND lists.user_id = $1 LIMIT $2 OFFSET $3',
+      values: [userId, limit, offset]
+    };
   }
   return db.query(query);
 };
