@@ -6,7 +6,7 @@
     "is_private": false
   },
   {
-    "user_id": 2,
+    "user_id": 1,
     "name": "Best Pizza Joints in Brooklyn",
     "is_ordered": false,
     "is_private": true

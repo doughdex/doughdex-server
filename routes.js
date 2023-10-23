@@ -8,7 +8,7 @@ router.get('/users/:user_id', controllers.User.getUserById);
 router.post('/users', controllers.User.createUser);
 router.put('/users/:user_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.User.updateUser);
 router.delete('/users/:user_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.User.deleteUser);
-router.get('/users/:user_id/lists', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.User.getUserLists);
+router.get('/users/:user_id/lists', controllers.User.getUserLists);
 
 // Place Routes
 router.get('/places', controllers.Place.getPlaces);
