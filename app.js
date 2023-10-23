@@ -15,9 +15,6 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use((req, res, next) => authenticateRequestor(req, res, next));
-app.get('/', (req, res) => {
-  res.send('Hello world.');
-});
 
 app.use('/api', routes);
 
