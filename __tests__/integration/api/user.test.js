@@ -412,10 +412,58 @@ describe('/api/users', () => {
 
   describe('DELETE /users/:user_id', () => {
 
-    it('should be true', () => {
+    let testToken;
 
+    beforeEach(() => {
+      testToken = 'user1Token';
     });
 
+    it('should delete a user upon valid request', async () => {
+      await request(app)
+        .delete('/api/users/1')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(204)
+    });
+
+    it('should not delete the user when the requesting user is not the owner', async () => {
+      const response = await request(app)
+        .delete('/api/users/2')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
+
+    it('should return a 401 error if the requesting user is banned', async () => {
+      testToken = 'user3Token';
+
+      const response = await request(app)
+        .delete('/api/users/3')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
+
+    it('should return a 401 error if the requesting user is archived', async () => {
+      testToken = 'archivedUserToken';
+
+      const response = await request(app)
+        .delete('/api/users/4')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
+
+    it('should return a 401 error for an invalid user_id param', async () => {
+      const response = await request(app)
+        .delete('/api/users/invalid')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
   });
 
   describe('GET /users/:user_id/lists', () => {

@@ -8,6 +8,8 @@ admin.getAuth = jest.fn().mockImplementation(() => ({
       return Promise.resolve({ uid: 'user2', email: 'jane.doe@example.com' });
     } else if (token === 'user3Token') {
       return Promise.resolve({ uid: 'user3', email: 'bob.smith@example.com' });
+    } else if (token === 'archivedUserToken') {
+      return Promise.resolve({ uid: 'user4', email: 'alice.johnson@example.com' });
     } else if (token === 'validToken') {
       return Promise.resolve({ uid: 'uid123' });
     } else if (token === 'noUser') {

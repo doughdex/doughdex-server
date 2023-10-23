@@ -10,7 +10,8 @@
     "avatar_url": "https://example.com/avatar1.jpg",
     "is_admin": true,
     "is_banned": false,
-    "is_private": false
+    "is_private": false,
+    "is_archived": false
   },
   {
     "uid": "user2",
@@ -23,7 +24,8 @@
     "avatar_url": "https://example.com/avatar2.jpg",
     "is_admin": false,
     "is_banned": false,
-    "is_private": true
+    "is_private": true,
+    "is_archived": false
   },
   {
     "uid": "user3",
@@ -36,7 +38,8 @@
     "avatar_url": "https://example.com/avatar3.jpg",
     "is_admin": false,
     "is_banned": true,
-    "is_private": false
+    "is_private": false,
+    "is_archived": false
   },
   {
     "uid": "user4",
@@ -49,7 +52,8 @@
     "avatar_url": "https://example.com/avatar4.jpg",
     "is_admin": false,
     "is_banned": false,
-    "is_private": false
+    "is_private": false,
+    "is_archived": true
   },
   {
     "uid": "user5",
@@ -62,7 +66,8 @@
     "avatar_url": "https://example.com/avatar5.jpg",
     "is_admin": false,
     "is_banned": false,
-    "is_private": true
+    "is_private": true,
+    "is_archived": true
   },
   {
     "uid": "user6",
@@ -75,7 +80,8 @@
     "avatar_url": "https://example.com/avatar6.jpg",
     "is_admin": false,
     "is_banned": false,
-    "is_private": false
+    "is_private": false,
+    "is_archived": true
   },
   {
     "uid": "user7",
@@ -88,7 +94,8 @@
     "avatar_url": "https://example.com/avatar7.jpg",
     "is_admin": false,
     "is_banned": false,
-    "is_private": false
+    "is_private": false,
+    "is_archived": false
   },
   {
     "uid": "user8",
@@ -101,7 +108,8 @@
     "avatar_url": "https://example.com/avatar8.jpg",
     "is_admin": false,
     "is_banned": false,
-    "is_private": true
+    "is_private": true,
+    "is_archived": false
   },
   {
     "uid": "user9",
@@ -114,7 +122,8 @@
     "avatar_url": "https://example.com/avatar9.jpg",
     "is_admin": false,
     "is_banned": false,
-    "is_private": false
+    "is_private": false,
+    "is_archived": false
   },
   {
     "uid": "user10",

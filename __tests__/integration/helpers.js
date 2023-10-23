@@ -20,14 +20,13 @@ const loadUserFixtures = async () => {
     const userFixtures = require(path.join(__dirname, 'fixtures', 'users.json'));
 
     for (const user of userFixtures) {
-      const { uid, name, display_name, email, location, timezone, bio, avatar_url, is_admin, is_banned, is_private } = user;
+      const { uid, name, display_name, email, location, timezone, bio, avatar_url, is_admin, is_banned, is_private, is_archived } = user;
       const query = `
-        INSERT INTO users (uid, name, display_name, email, location, timezone, bio, avatar_url, is_admin, is_banned, is_private)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`;
+        INSERT INTO users (uid, name, display_name, email, location, timezone, bio, avatar_url, is_admin, is_banned, is_private, is_archived)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`;
 
-      await client.query(query, [uid, name, display_name, email, location, timezone, bio, avatar_url, is_admin, is_banned, is_private]);
+      await client.query(query, [uid, name, display_name, email, location, timezone, bio, avatar_url, is_admin, is_banned, is_private, is_archived]);
     }
-    // const listPlaceFixtures = require(path.join(__dirname, 'fixtures', 'list_places.json'));
   } catch (error) {
     console.error('Error loading user fixtures:', error);
   } finally {
