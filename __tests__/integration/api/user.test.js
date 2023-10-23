@@ -540,56 +540,57 @@ describe('/api/users', () => {
     });
   });
 
-  // describe('PUT /users/:user_id/login', () => {
+  describe('PUT /users/:user_id/login', () => {
 
-  //   let testToken;
+    let testToken;
 
-  //   it('should update the last_login_at field for a user upon valid request and return user data', async () => {
-  //     testToken = 'user1Token';
+    it('should update the last_login_at field for a user upon valid request and return user data', async () => {
+      testToken = 'user1Token';
 
-  //     const response = await request(app)
-  //       .put('/api/users/1/login')
-  //       .set({ 'Authorization': `Bearer ${testToken}` })
-  //       .expect(200)
-  //       .expect('Content-Type', /json/);
+      const response = await request(app)
+        .put('/api/users/1/login')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(200)
+        .expect('Content-Type', /json/);
 
-  //     expect(response.body.data).toBeTruthy();
-  //   });
+      expect(response.body).toBeTruthy();
+      expect(response.body.created_at).not.toBe(response.body.last_login_at);
+    });
 
-  //   it('should return a 401 error if the requesting user is banned', async () => {
-  //     testToken = 'user3Token';
+    it('should return a 401 error if the requesting user is banned', async () => {
+      testToken = 'user3Token';
 
-  //     const response = await request(app)
-  //       .put('/api/users/3/login')
-  //       .set({ 'Authorization': `Bearer ${testToken}` })
-  //       .expect(401)
-  //       .expect('Content-Type', /json/);
+      const response = await request(app)
+        .put('/api/users/3/login')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+        .expect('Content-Type', /json/);
 
-  //     expect(response.body).toEqual({ message: 'Unauthorized' });
-  //   });
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
 
-  //   it('should return a 401 error if the requesting user is archived', async () => {
-  //     testToken = 'archivedUserToken';
+    it('should return a 401 error if the requesting user is archived', async () => {
+      testToken = 'archivedUserToken';
 
-  //     const response = await request(app)
-  //       .put('/api/users/4/login')
-  //       .set({ 'Authorization': `Bearer ${testToken}` })
-  //       .expect(401)
-  //       .expect('Content-Type', /json/);
+      const response = await request(app)
+        .put('/api/users/4/login')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+        .expect('Content-Type', /json/);
 
-  //     expect(response.body).toEqual({ message: 'Unauthorized' });
-  //   });
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
 
-  //   it('should return a 401 error if the requesting user is not the owner', async () => {
-  //     testToken = 'user2Token';
+    it('should return a 401 error if the requesting user is not the owner', async () => {
+      testToken = 'user2Token';
 
-  //     const response = await request(app)
-  //       .put('/api/users/1/login')
-  //       .set({ 'Authorization': `Bearer ${testToken}` })
-  //       .expect(401)
-  //       .expect('Content-Type', /json/);
+      const response = await request(app)
+        .put('/api/users/1/login')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+        .expect('Content-Type', /json/);
 
-  //     expect(response.body).toEqual({ message: 'Unauthorized' });
-  //   });
-  // });
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
+  });
 });

@@ -131,7 +131,9 @@ const updateUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
 
-  if (req.user.uid !== parseInt(req.params.user_id)) {
+  console.log(req.path, req.user);
+
+  if (!req.user || req.user.id !== parseInt(req.params.user_id)) {
     res.status(401).json({ message: 'Unauthorized' });
     return;
   }
