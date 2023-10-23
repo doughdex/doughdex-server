@@ -61,11 +61,20 @@ const getUserLists = (userId, page, limit, isUser) => {
   return db.query(query);
 };
 
+const loginUser = (userId) => {
+  query = {
+    text: 'UPDATE users SET last_login_at = NOW() WHERE id = $1 AND is_archived = false AND is_banned = false RETURNING *',
+    values: [userId]
+  };
+  return db.query(query);
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateUser,
   deleteUser,
-  getUserLists
+  getUserLists,
+  loginUser,
 };

@@ -470,6 +470,7 @@ describe('/api/users', () => {
 
     let testToken;
 
+<<<<<<< HEAD
     beforeEach(() => {
       testToken = 'user1Token';
     });
@@ -489,6 +490,24 @@ describe('/api/users', () => {
       expect(response.body.data.length).toBe(parseInt(response.body.data[0].total_count));
     });
 
+=======
+    it('should return lists for a user upon valid request', async () => {
+      testToken = 'user1Token';
+      const response = await request(app)
+        .get('/api/users/1/lists')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toBeTruthy();
+      expect(response.body.data).toBeTruthy();
+      expect(response.body.data[0]).toHaveProperty('id');
+      expect(response.body.data[0]).toHaveProperty('name');
+      expect(response.body.data[0]).toHaveProperty('total_count');
+      expect(response.body.data.length).toBe(parseInt(response.body.data[0].total_count));
+    });
+
+>>>>>>> loginuser
     it('should return only public lists for a user if the requesting user is not the owner', async () => {
       testToken = 'user2Token';
 
@@ -541,5 +560,62 @@ describe('/api/users', () => {
 
       expect(response.body).toEqual({ message: 'User not found' });
     });
+<<<<<<< HEAD
+=======
+  });
+
+  describe('PUT /users/:user_id/login', () => {
+
+    let testToken;
+
+    it('should update the last_login_at field for a user upon valid request and return user data', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .put('/api/users/1/login')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toBeTruthy();
+      expect(response.body.created_at).not.toBe(response.body.last_login_at);
+    });
+
+    it('should return a 401 error if the requesting user is banned', async () => {
+      testToken = 'user3Token';
+
+      const response = await request(app)
+        .put('/api/users/3/login')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
+
+    it('should return a 401 error if the requesting user is archived', async () => {
+      testToken = 'archivedUserToken';
+
+      const response = await request(app)
+        .put('/api/users/4/login')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
+
+    it('should return a 401 error if the requesting user is not the owner', async () => {
+      testToken = 'user2Token';
+
+      const response = await request(app)
+        .put('/api/users/1/login')
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .expect(401)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
+>>>>>>> loginuser
   });
 });

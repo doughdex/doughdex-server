@@ -129,6 +129,25 @@ const updateUser = async (req, res) => {
   }
 };
 
+const loginUser = async (req, res) => {
+
+  console.log(req.path, req.user);
+
+  if (!req.user || req.user.id !== parseInt(req.params.user_id)) {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
+  }
+
+  try {
+    const response = await models.User.loginUser(req.user.id);
+    const data = response.rows[0];
+    res.status(200).send(data);
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     await models.User.deleteUser(req.params.user_id);
@@ -179,5 +198,6 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  getUserLists
+  getUserLists,
+  loginUser,
 };

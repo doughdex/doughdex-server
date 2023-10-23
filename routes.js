@@ -7,6 +7,7 @@ router.get('/users', controllers.User.getUsers);
 router.get('/users/:user_id', controllers.User.getUserById);
 router.post('/users', controllers.User.createUser);
 router.put('/users/:user_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.User.updateUser);
+router.put('/users/:user_id/login', controllers.User.loginUser);
 router.delete('/users/:user_id', (req, res, next) => middleware.validateUserOwnership(req, res, next), controllers.User.deleteUser);
 router.get('/users/:user_id/lists', controllers.User.getUserLists);
 
