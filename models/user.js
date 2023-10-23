@@ -38,7 +38,7 @@ const updateUser = (userId, parts, values) => {
 
 const deleteUser = (userId) => {
   const query = {
-    text: 'DELETE FROM users WHERE id = $1',
+    text: 'UPDATE users SET is_archived = true WHERE id = $1',
     values: [userId]
   };
   return db.query(query);

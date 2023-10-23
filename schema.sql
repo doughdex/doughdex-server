@@ -23,6 +23,7 @@ CREATE TABLE users (
     is_admin BOOLEAN DEFAULT false,
     is_banned BOOLEAN DEFAULT false,
     is_private BOOLEAN DEFAULT false,
+    is_archived BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     last_login_at TIMESTAMPTZ DEFAULT NOW()
 );
