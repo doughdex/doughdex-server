@@ -43,11 +43,11 @@ CREATE TABLE places (
     is_operational BOOLEAN DEFAULT true,
     is_archived BOOLEAN DEFAULT false,
     is_approved BOOLEAN DEFAULT false,
+    is_flagged BOOLEAN DEFAULT false,
     created_by INT REFERENCES users(id),
     approved_by INT REFERENCES users(id),
-    flagged BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
     archived_at TIMESTAMPTZ
 );
 

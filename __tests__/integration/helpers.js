@@ -42,13 +42,13 @@ const loadPlacesFixtures = async () => {
     const placeFixtures = require(path.join(__dirname, 'fixtures', 'places.json'));
 
     for (const place of placeFixtures) {
-      const { google_places_id, name, address, city, state, zip, loc, recommendations, ratings_counts, is_operational, is_archived, is_approved } = place;
+      const { google_places_id, name, address, city, state, zip, loc, recommendations, ratings_counts, is_operational, is_archived, is_approved, is_flagged } = place;
 
       const query = `
-        INSERT INTO places (google_places_id, name, address, city, state, zip, loc, recommendations, ratings_counts, is_operational, is_archived, is_approved)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`;
+        INSERT INTO places (google_places_id, name, address, city, state, zip, loc, recommendations, ratings_counts, is_operational, is_archived, is_approved, is_flagged)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`;
 
-      await client.query(query, [google_places_id, name, address, city, state, zip, loc, recommendations, ratings_counts, is_operational, is_archived, is_approved]);
+      await client.query(query, [google_places_id, name, address, city, state, zip, loc, recommendations, ratings_counts, is_operational, is_archived, is_approved, is_flagged]);
     }
   } catch (error) {
       console.error('Error loading places fixtures:', error);
