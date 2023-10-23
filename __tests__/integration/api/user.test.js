@@ -286,10 +286,128 @@ describe('/api/users', () => {
 
   describe('PUT /users/:user_id', () => {
 
-    it('should be true', () => {
+    let updatedser, testToken;
+
+    beforeEach(() => {
+      updatedUser = {
+        name: 'Updated User',
+        display_name: 'Updated User',
+        email: 'updated@updated.com',
+        location: 'Updated Location',
+        timezone: 'Updated Timezone',
+        bio: 'Updated Bio',
+        avatar_url: 'https://example.com/updated-avatar.png',
+        is_private: true,
+      }
+
+      testToken = 'user1Token';
+    });
+
+    it('should update the user when provided valid inputs', async () => {
+      const response = await request(app)
+        .put('/api/users/1')
+        .send(updatedUser)
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .set({'content-type': 'application/json'})
+        .expect(200)
+
+      expect(response.body).toBeTruthy();
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('uid');
+      expect(response.body.email).toBe(updatedUser.email);
+      expect(response.body.name).toBe(updatedUser.name);
+      expect(response.body.display_name).toBe(updatedUser.display_name);
+      expect(response.body.location).toBe(updatedUser.location);
+      expect(response.body.timezone).toBe(updatedUser.timezone);
+      expect(response.body.bio).toBe(updatedUser.bio);
+      expect(response.body.avatar_url).toBe(updatedUser.avatar_url);
+      expect(response.body.is_private).toBe(updatedUser.is_private);
+    });
+
+    it('should return a 400 error if the user_id param is invalid', async () => {
+      const response = await request(app)
+        .put('/api/users/invalid')
+        .send(updatedUser)
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .set({'content-type': 'application/json'})
+        .expect(401)
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
+
+    it('should not update the is_admin, is_banned, and uid fields for a user', async () => {
+      updatedUser.uid = 'updateduid';
+      updatedUser.is_admin = true;
+
+      testToken = 'user2Token';
+
+      const response = await request(app)
+        .put('/api/users/2')
+        .send(updatedUser)
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .set({'content-type': 'application/json'})
+        .expect(200)
+
+      expect(response.body).toBeTruthy();
+      expect(response.body.uid).not.toBe(updatedUser.uid);
+      expect(response.body.is_admin).toBe(false);
+    });
+
+    it('should return a 401 error if the user is not the owner', async () => {
+
+      const response = await request(app)
+        .put('/api/users/2')
+        .send(updatedUser)
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .set({'content-type': 'application/json'})
+        .expect(401)
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
 
     });
 
+    it('should return a 400 error if the email is invalid', async () => {
+
+      updatedUser.email = 'invalidemail';
+
+      const response = await request(app)
+        .put('/api/users/1')
+        .send(updatedUser)
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .set({'content-type': 'application/json'})
+        .expect(400)
+
+      expect(response.body).toEqual({ message: 'Invalid email address' });
+
+    });
+
+    it('should return a 400 error if the email is already in use', async () => {
+
+      updatedUser.email = 'jane.doe@example.com';
+
+      const response = await request(app)
+        .put('/api/users/1')
+        .send(updatedUser)
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .set({'content-type': 'application/json'})
+        .expect(400)
+
+      expect(response.body).toEqual({ message: 'Email already in use' });
+
+    });
+
+    it('should return a 401 error if the requesting user is banned', async () => {
+      testToken = 'user3Token';
+
+      const response = await request(app)
+        .put('/api/users/3')
+        .send(updatedUser)
+        .set({ 'Authorization': `Bearer ${testToken}` })
+        .set({'content-type': 'application/json'})
+        .expect(401)
+
+      expect(response.body).toEqual({ message: 'Unauthorized' });
+    });
   });
 
   describe('DELETE /users/:user_id', () => {

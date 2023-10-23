@@ -9,7 +9,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 const validateUserOwnership = (req, res, next) => {
-  if (!req.user || req.user.id !== req.params.user_id) {
+  if (!req.user || parseInt(req.user.id) !== parseInt(req.params.user_id)) {
     res.status(401).json({ message: 'Unauthorized' });
   } else {
     return next();

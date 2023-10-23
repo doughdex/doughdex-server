@@ -17,6 +17,9 @@ const authenticateRequestor = async (req, res, next) => {
 
     if (!user) {
       req.user = null;
+    } else if (user.is_banned) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
     } else {
       req.user = user;
     }

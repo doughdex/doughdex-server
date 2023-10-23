@@ -30,7 +30,7 @@ const createUser = (data) => {
 
 const updateUser = (userId, parts, values) => {
   const query = {
-    text: `UPDATE users SET ${parts.join(', ')} WHERE id = $${values.length + 1}`,
+    text: `UPDATE users SET ${parts.join(', ')} WHERE id = $${values.length + 1} RETURNING *`,
     values: [...values, userId]
   };
   return db.query(query);

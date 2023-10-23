@@ -96,12 +96,26 @@ const updateUser = async (req, res) => {
   const userId = req.params.user_id;
   const updateData = req.body;
 
+  if (req.body?.email) {
+    if (!isValidEmail(req.body.email)) {
+      res.status(400).json({ message: 'Invalid email address' });
+      return;
+    }
+
+    const uniqueEmail = await isUniqueEmail(req.body.email);
+
+    if (!uniqueEmail) {
+      res.status(400).json({ message: 'Email already in use' });
+      return;
+    }
+  }
+
   try {
     const queryParts = [];
     const queryValues = [];
 
     for (const key in updateData) {
-      if (key === 'is_admin' || key === 'is_banned') { continue; }
+      if (key === 'is_admin' || key === 'uid') { continue; }
       queryParts.push(`${key} = $${queryValues.length + 1}`);
       queryValues.push(updateData[key]);
     }
