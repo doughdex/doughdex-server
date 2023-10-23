@@ -4,7 +4,7 @@ const { setOffset } = require('./helpers');
 const getUsers = (page, limit) => {
   const offset = setOffset(page, limit);
   const query = {
-    text: 'SELECT id, name, display_name, email, location, bio, avatar_url, timezone, is_private, is_banned, COUNT(*) OVER() as total_count FROM users WHERE is_private = false AND is_banned = false LIMIT $1 OFFSET $2',
+    text: 'SELECT id, name, display_name, email, location, bio, avatar_url, timezone, is_private, is_banned, COUNT(*) OVER() as total_count FROM users WHERE is_private = false AND is_banned = false AND is_archived = false LIMIT $1 OFFSET $2',
     values: [limit, offset]
   }
 
@@ -13,7 +13,7 @@ const getUsers = (page, limit) => {
 
 const getUserById = (userId) => {
   const query = {
-    text: 'SELECT * FROM users WHERE id = $1 AND is_banned = false',
+    text: 'SELECT * FROM users WHERE id = $1 AND is_banned = false AND is_archived = false',
     values: [userId]
   }
   return db.query(query);
