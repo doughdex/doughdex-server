@@ -14,6 +14,7 @@ router.get('/users/:user_id/lists', controllers.User.getUserLists);
 // Place Routes
 router.get('/places', controllers.Place.getPlaces);
 router.get('/places/:place_id', controllers.Place.getPlaceById);
+router.get('/places/details/:google_places_id', controllers.Place.getGooglePlacesDetails);
 
 // List Routes
 router.get('/lists', controllers.List.getLists);

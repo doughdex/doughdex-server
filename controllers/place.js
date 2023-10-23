@@ -1,5 +1,7 @@
+require('dotenv').config();
 const { models } = require('../models');
 const { createPaginationLinks } = require('./helpers');
+const axios = require('axios');
 
 const getPlaces = async (req, res) => {
   try {
@@ -7,7 +9,7 @@ const getPlaces = async (req, res) => {
     const limit = parseInt(req.query?.limit) >= 1 ? req.query.limit : 10;
     const result = await models.Place.getPlaces(page, limit);
     const data = result.rows;
-    const totalCount = parseInt(data[0].total_count, 10);
+    const totalCount = parseInt(data[0]?.total_count, 10) || 0;
     const totalPages = Math.ceil(totalCount / limit);
     const links = createPaginationLinks(req, page, limit, totalPages);
 
@@ -32,11 +34,34 @@ const getPlaceById = async (req, res) => {
     const id = req.params.place_id;
     const result = await models.Place.getPlaceById(id);
     const data = result.rows[0];
-    res.status(200).send(data);
+
+    if (!data) {
+      res.status(404).json({ message: 'Place not found' });
+    } else {
+      res.status(200).send(data);
+    }
   } catch (error) {
     console.error('Error retrieving place data:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-module.exports = { getPlaces, getPlaceById };
+const getGooglePlacesDetails = async (req, res) => {
+
+  let googlePlacesId = req.params.google_places_id;
+
+  try {
+    let response = await axios.get(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${googlePlacesId}&key=${process.env.GOOGLE_API_KEY}`);
+    let data = response.data.result;
+    if (!data) {
+      res.status(404).json({ message: 'Place not found' });
+    } else {
+      res.status(200).send(data);
+    }
+  } catch (error) {
+    console.error('Error retrieving place data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { getPlaces, getPlaceById, getGooglePlacesDetails };
