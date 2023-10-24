@@ -321,6 +321,7 @@ describe('List controller', () => {
 
       req.params.list_id = 1;
       req.params.place_id = 2;
+      req.user.id = 1;
 
       await controllers.List.removeSpotFromList(req, res);
 
@@ -329,6 +330,9 @@ describe('List controller', () => {
     });
 
     it('should return a 500 status code and error message when an error occurs', async () => {
+      req.params.list_id = 1;
+      req.params.place_id = 2;
+      req.user.id = 1;
 
       models.List.removeSpotFromList.mockRejectedValue(new Error('Mocked error message'));
 

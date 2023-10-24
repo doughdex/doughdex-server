@@ -482,5 +482,52 @@ describe('/api/lists', () => {
 
   describe('DELETE /lists/:list_id/spots/:spot_id', () => {
 
+    let testToken;
+
+    it('should remove a spot from the list when the requesting user is the list creator', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .delete('/api/lists/1/spots/1')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(204);
+    });
+
+    it('should not remove a spot from the list when the requesting user is not the list creator', async () => {
+      testToken = 'user2Token';
+
+      const response = await request(app)
+        .delete('/api/lists/1/spots/1')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(404);
+
+    });
+
+    it('should return a 404 if the list is not found', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .delete('/api/lists/9999/spots/1')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(404);
+    });
+
+    it('should return a 400 if the list_id is invalid', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .delete('/api/lists/invalid/spots/1')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(400);
+    });
+
+    it('should return a 400 if the spot_id is invalid', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .delete('/api/lists/1/spots/invalid')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(400);
+    });
   });
 });

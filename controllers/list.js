@@ -167,6 +167,19 @@ const addSpotToList = async (req, res) => {
 };
 
 const removeSpotFromList = async (req, res) => {
+
+  if (!parseInt(req.params.list_id) || !parseInt(req.params.place_id)) {
+    res.status(400).json({ message: 'Bad Request' });
+    return;
+  }
+
+  const isOwner = await isListOwner(req.user.id, req.params.list_id);
+
+  if (!isOwner) {
+    res.status(404).json({ message: 'List Not Found' });
+    return;
+  }
+
   try {
     const placeId = req.params.spot_id;
     const listId = req.params.list_id;

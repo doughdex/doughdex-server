@@ -23,7 +23,7 @@ router.post('/lists', (req, res, next) => isAuthenticated(req, res, next), contr
 router.put('/lists/:list_id', (req, res, next) => isAuthenticated(req, res, next), controllers.List.updateList);
 router.post('/lists/:list_id/spots', (req, res, next) => isAuthenticated(req, res, next), controllers.List.addSpotToList);
 router.delete('/lists/:list_id', (req, res, next) => isAuthenticated(req, res, next), controllers.List.deleteList);
-router.delete('/lists/:list_id/spots/:spot_id', (req, res, next) => isAuthenticated(req, res, next), controllers.List.removeSpotFromList);
+router.delete('/lists/:list_id/spots/:place_id', (req, res, next) => isAuthenticated(req, res, next), controllers.List.removeSpotFromList);
 
 // Admin Routes (FUTURE)
 
