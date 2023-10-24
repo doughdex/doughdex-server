@@ -57,11 +57,12 @@ describe('List Model', () => {
 
   describe('updateList', () => {
     it('should generate and execute a valid query', () => {
+      const userId = 1;
       const listId = 1;
       const parts = ['name = $1'];
       const values = ['testList'];
 
-      models.List.updateList(listId, parts, values);
+      models.List.updateList(userId, listId, parts, values);
 
       expect(db.query).toHaveBeenCalled();
     });

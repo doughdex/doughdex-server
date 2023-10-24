@@ -1,7 +1,7 @@
 const { server } = require('../../../app');
 const { controllers } = require('../../../controllers');
 const { models } = require('../../../models')
-const { createPaginationLinks } = require('../../../controllers/helpers')
+const { createPaginationLinks, isUserVisible } = require('../../../controllers/helpers')
 
 let req, res, consoleError;
 
@@ -23,6 +23,7 @@ jest.mock('../../../models', () => ({
 
 jest.mock('../../../controllers/helpers', () => ({
   createPaginationLinks: jest.fn().mockReturnValue({}),
+  isUserVisible: jest.fn().mockReturnValue(true),
 }));
 
 describe('List controller', () => {
@@ -96,13 +97,17 @@ describe('List controller', () => {
 
   describe('getListById', () => {
 
+    beforeEach(() => {
+      req.params.list_id = 1;
+    });
+
     it('should return a 200 status code and data when provided a valid list id', async () => {
 
       req.params.list_id = 1;
 
       const mockData = {
         rows: [
-          { id: 1, name: 'SF', total_count: 2 },
+          { id: 1, name: 'SF', is_archived: false, is_flagged: false, places: [] },
         ]
       };
 
@@ -156,6 +161,10 @@ describe('List controller', () => {
 
     it('should return a 500 status code and error message when an error occurs', async () => {
 
+      req.body = {
+        listName: 'Test List',
+      };
+
       models.List.createList.mockRejectedValue(new Error('Mocked error message'));
 
       await controllers.List.createList(req, res);
@@ -172,6 +181,11 @@ describe('List controller', () => {
       let parts = ['name = $1'];
       let values = ['Test List'];
       req.params.list_id = 1;
+      req.user.id = 1;
+
+      req.body = {
+        name: 'Test List',
+      }
 
       const mockData = {
         rows: [
@@ -182,7 +196,6 @@ describe('List controller', () => {
           }
         ]
       };
-
 
       models.List.updateList.mockResolvedValue(mockData);
 
@@ -198,6 +211,7 @@ describe('List controller', () => {
         is_flagged: false,
       }
       req.params.list_id = 1;
+      req.user.id = 1;
 
       const mockData = {
         rows: [
@@ -213,12 +227,17 @@ describe('List controller', () => {
 
       await controllers.List.updateList(req, res);
 
-      expect(models.List.updateList).toHaveBeenCalledWith(1, ['name = $1'], ['Test List']);
+      expect(models.List.updateList).toHaveBeenCalledWith(1, 1, ['name = $1'], ['Test List']);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith(mockData.rows[0]);
     });
 
     it('should return a 500 status code and error message when an error occurs', async () => {
+      req.user.id = 1;
+      req.params.list_id = 1;
+      req.body = {
+        name: 'Test List',
+      };
 
       models.List.updateList.mockRejectedValue(new Error('Mocked error message'));
 

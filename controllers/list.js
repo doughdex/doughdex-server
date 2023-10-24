@@ -41,7 +41,6 @@ const getListById = async (req, res) => {
       res.status(404).json({ message: 'List Not Found' });
       return;
     }
-
     const data = result.rows[0];
 
     const isVisible = await isUserVisible(data.user_id);

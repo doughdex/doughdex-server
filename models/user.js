@@ -49,12 +49,12 @@ const getUserLists = (userId, page, limit, isUser) => {
   let query;
   if (isUser) {
     query = {
-        text: 'SELECT *, COUNT(*) OVER() as total_count FROM lists WHERE lists.user_id = $1 LIMIT $2 OFFSET $3',
+        text: 'SELECT *, COUNT(*) OVER() as total_count FROM lists WHERE lists.is_flagged = false AND lists.user_id = $1 LIMIT $2 OFFSET $3',
         values: [userId, limit, offset]
       };
   } else {
     query = {
-      text: 'SELECT lists.*, users.*, COUNT(*) OVER() as total_count FROM lists JOIN users ON lists.user_id = users.id WHERE lists.is_flagged = false AND lists.user_id = $1 LIMIT $2 OFFSET $3',
+      text: 'SELECT lists.*, COUNT(*) OVER() as total_count FROM lists JOIN users ON lists.user_id = users.id WHERE lists.is_flagged = false AND lists.is_private = false AND lists.user_id = $1 LIMIT $2 OFFSET $3',
       values: [userId, limit, offset]
     };
   }
