@@ -2,8 +2,9 @@ const { authenticateRequestor } = require('./auth');
 
 const isAuthenticated = (req, res, next) => {
   if (!req.user) {
-    res.status(401).json({ message: 'Login required.' });
+    res.status(401).json({ message: 'Authentication required.' });
   } else {
+    console.log('authenticated');
     return next();
   }
 };
@@ -12,6 +13,7 @@ const validateUserOwnership = (req, res, next) => {
   if (!req.user || parseInt(req.user.id) !== parseInt(req.params.user_id)) {
     res.status(401).json({ message: 'Unauthorized' });
   } else {
+    console.log('validated');
     return next();
   }
 };

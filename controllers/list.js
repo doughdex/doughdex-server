@@ -1,6 +1,6 @@
 const { models } = require('../models');
 const { decodeToken } = require('../middleware');
-const { createPaginationLinks } = require('./helpers');
+const { createPaginationLinks, isUserVisible } = require('./helpers');
 
 const getLists = async (req, res) => {
   try {
@@ -28,10 +28,29 @@ const getLists = async (req, res) => {
 };
 
 const getListById = async (req, res) => {
-  // Todo: If a list is private, only return if requested by list creator
+
+  if (!parseInt(req.params.list_id)) {
+    res.status(404).json({ message: 'List Not Found' });
+    return;
+  }
+
   try {
     const result = await models.List.getListById(req.params.list_id);
+
+    if (result.rows.length === 0 || result.rows[0].is_archived || result.rows[0].is_flagged) {
+      res.status(404).json({ message: 'List Not Found' });
+      return;
+    }
+
     const data = result.rows[0];
+
+    const isVisible = await isUserVisible(data.user_id);
+
+    if ((!isVisible && req.user?.id !== data.user_id) || (data.is_private && req.user?.id !== data.user_id)) {
+        res.status(404).json({ message: 'List Not Found' });
+        return;
+    }
+
     res.status(200).send(data);
   } catch (error) {
     console.error('Error retrieving list:', error);
@@ -40,6 +59,12 @@ const getListById = async (req, res) => {
 };
 
 const createList = async (req, res) => {
+
+  if (!req.body || !req.body.listName) {
+    res.status(400).json({ message: 'Bad Request' });
+    return;
+  }
+
   try {
     const userId = req.user.id;
     const listName = req.body.listName;
@@ -54,6 +79,7 @@ const createList = async (req, res) => {
 };
 
 const updateList = async (req, res) => {
+  const userId = req.user.id;
   const listId = req.params.list_id;
   const updateData = req.body;
 
@@ -67,7 +93,18 @@ const updateList = async (req, res) => {
       queryValues.push(updateData[key]);
     }
 
-    const result = await models.List.updateList(listId, queryParts, queryValues);
+    if (queryParts.length === 0) {
+      res.status(400).json({ message: 'Bad Request' });
+      return;
+    }
+
+    const result = await models.List.updateList(userId, listId, queryParts, queryValues);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ message: 'List Not Found' });
+      return;
+    }
+
     const data = result.rows[0];
     res.status(200).send(data);
   } catch (error) {

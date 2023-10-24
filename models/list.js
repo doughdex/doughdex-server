@@ -26,41 +26,18 @@ const getListById = (listId) => {
   const query = {
     text: `
       SELECT
-        l.id,
-        l.user_id,
-        l.name,
-        l.is_ordered,
-        l.is_private,
-        l.is_flagged,
-        l.is_visible,
-        l.created_at,
-        p.id AS place_id,
-        p.google_places_id,
-        p.name AS place_name,
-        p.address,
-        p.city,
-        p.state,
-        p.zip,
-        p.loc,
-        p.recommendations,
-        p.ratings_counts,
-        p.is_operational,
-        p.is_archived,
-        p.flagged,
-        p.created_at AS place_created_at,
-        p.updated_at AS place_updated_at,
-        p.archived_at AS place_archived_at
-      FROM lists AS l
-      JOIN list_places AS lp ON l.id = lp.list_id
-      JOIN places AS p ON lp.place_id = p.id
-      JOIN users AS u ON l.user_id = u.id
-      WHERE l.id = $1
-        AND l.is_private = false
-        AND l.is_flagged = false
-        AND u.is_archived = false
-        AND u.is_banned = false
-        AND u.is_private = false
-      ORDER BY lp.position DESC
+        lists.*,
+        JSON_AGG(places.*) AS places
+      FROM
+        lists
+      JOIN
+        list_places ON lists.id = list_places.list_id
+      JOIN
+        places ON list_places.place_id = places.id
+      WHERE
+        lists.id = $1
+      GROUP BY
+        lists.id
     `,
     values: [listId]
   }
@@ -76,10 +53,10 @@ const createList = (userId, listName) => {
 
 };
 
-const updateList = (listId, parts, values) => {
+const updateList = (userId, listId, parts, values) => {
   const query = {
-    text: `UPDATE lists SET ${parts.join(', ')} WHERE id = $${values.length + 1}`,
-    values: [...values, listId]
+    text: `UPDATE lists SET ${parts.join(', ')} WHERE id = $${values.length + 1} AND user_id = $${values.length + 2} RETURNING *`,
+    values: [...values, listId, userId]
   };
   return db.query(query);
 };

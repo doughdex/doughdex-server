@@ -66,13 +66,13 @@ const loadListsFixtures = async () => {
     const listFixtures = require(path.join(__dirname, 'fixtures', 'lists.json'));
 
     for (const list of listFixtures) {
-      const { user_id, name, is_private, is_ordered } = list;
+      const { user_id, name, is_private, is_ordered, is_flagged } = list;
 
       const query = `
-        INSERT INTO lists (user_id, name, is_private, is_ordered)
-        VALUES ($1, $2, $3, $4)`;
+        INSERT INTO lists (user_id, name, is_private, is_ordered, is_flagged)
+        VALUES ($1, $2, $3, $4, $5)`;
 
-      await client.query(query, [user_id, name, is_private, is_ordered]);
+      await client.query(query, [user_id, name, is_private, is_ordered, is_flagged]);
     }
   } catch (error) {
     console.error('Error loading lists fixtures:', error);

@@ -121,14 +121,222 @@ describe('/api/lists', () => {
 
   describe('GET /lists/:list_id', () => {
 
+    let testToken;
+
+    it('should return a list and all of its places', async () => {
+
+        const response = await request(app)
+          .get('/api/lists/1')
+          .expect(200)
+          .expect('Content-Type', /json/);
+
+        expect(response.body).toBeTruthy();
+        expect(response.body).toHaveProperty('id');
+        expect(response.body).toHaveProperty('user_id');
+        expect(response.body).toHaveProperty('name');
+        expect(response.body).toHaveProperty('is_private');
+        expect(response.body).toHaveProperty('is_ordered');
+        expect(response.body).toHaveProperty('is_flagged');
+        expect(response.body).toHaveProperty('created_at');
+        expect(response.body).toHaveProperty('places');
+        expect(response.body.places).toHaveLength(2);
+    });
+
+    it('should return a 404 when provided an invalid list id', async () => {
+      const response = await request(app)
+        .get('/api/lists/a')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'List Not Found' });
+    });
+
+    it('should not return a list if the list is private and the requesting user is not the list creator', async () => {
+      testToken = 'user2Token';
+
+      const response = await request(app)
+        .get('/api/lists/2')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'List Not Found' });
+    });
+
+    it('should not return a list if the list creator is private and not the requesting user', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .get('/api/lists/12')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'List Not Found' });
+    });
+
+    it('should return a 404 if list is flagged', async () => {
+
+      const response = await request(app)
+        .get('/api/lists/20')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'List Not Found' });
+    });
+
+    it('should return a 404 if list creator is banned', async () => {
+
+      const response = await request(app)
+        .get('/api/lists/3')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'List Not Found' });
+    });
+
+    it('should return a 404 if list creator is archived', async () => {
+
+      const response = await request(app)
+        .get('/api/lists/4')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'List Not Found' });
+    });
   });
 
   describe('POST /lists', () => {
 
+    let testToken, testList;
+
+    beforeEach(() => {
+      testToken = 'user1Token';
+    });
+
+    it('should create a new list by an authenticated user', async () => {
+      testList = {
+        listName: 'Test List'
+      };
+
+      const response = await request(app)
+        .post('/api/lists')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send(testList)
+        .expect(201)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toBeTruthy();
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('user_id');
+      expect(response.body).toHaveProperty('name');
+      expect(response.body).toHaveProperty('is_private');
+      expect(response.body).toHaveProperty('is_ordered');
+      expect(response.body).toHaveProperty('is_flagged');
+      expect(response.body).toHaveProperty('created_at');
+    });
+
+    it('should return a 401 if user is not authenticated', async () => {
+
+      testToken = '';
+
+      testList = {
+        listName: 'Test List'
+      };
+
+      const response = await request(app)
+        .post('/api/lists')
+        .send(testList)
+        .expect(401)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Authentication required.' });
+    });
+
+    it('should return a 400 if list name is not provided', async () => {
+
+      testList = {
+        listName: ''
+      };
+
+      const response = await request(app)
+        .post('/api/lists')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send(testList)
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Bad Request' });
+    });
+
+    it('should return a 400 if no content is provided', async () => {
+
+      const response = await request(app)
+        .post('/api/lists')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Bad Request' });
+    });
   });
 
   describe('PUT /lists/:list_id', () => {
 
+    let testToken, testList;
+
+    beforeEach(() => {
+      testToken = 'user1Token';
+      testList = {
+        name: 'Test List',
+        is_private: true,
+        is_ordered: true
+      };
+    });
+
+    it('should update a list by an authenticated user', async () => {
+
+      const response = await request(app)
+        .put('/api/lists/1')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send(testList)
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toBeTruthy();
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('user_id');
+      expect(response.body.name).toBe(testList.name);
+      expect(response.body.is_private).toBe(testList.is_private);
+      expect(response.body.is_ordered).toBe(testList.is_ordered);
+    });
+
+    it('should not update a list if the requesting user is not the list creator', async () => {
+      testToken = 'user2Token';
+
+      const response = await request(app)
+        .put('/api/lists/1')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send(testList)
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'List Not Found' });
+    });
+
+    it('should not update a list\'s is_flagged property', async () => {
+
+      testToken = 'user10Token';
+
+      const response = await request(app)
+        .put('/api/lists/20')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ is_flagged: false })
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Bad Request' });
+    });
   });
 
   describe('DELETE /lists/:list_id', () => {
