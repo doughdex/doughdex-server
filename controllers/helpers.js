@@ -58,9 +58,30 @@ const isUserVisible = async (userId) => {
     text: 'SELECT COUNT(*) FROM users WHERE id = $1 AND is_archived = false AND is_banned = false AND is_private = false',
     values: [userId],
   };
-  const response = await db.query(query);
+  const result = await db.query(query);
 
-  return response.rows[0].count === '1' ? true : false;
+  return result.rows[0].count === '1' ? true : false;
+};
+
+const isListOwner = async (userId, listId) => {
+  const query = {
+    text: 'SELECT COUNT(*) FROM lists WHERE id = $1 AND user_id = $2',
+    values: [listId, userId],
+  }
+  const result = await db.query(query);
+
+  return result.rows[0].count === '1' ? true : false;
+};
+
+const isUniqueInList = async (listId, placeId) => {
+  const query = {
+    text: 'SELECT COUNT(*) FROM list_places WHERE list_id = $1 AND place_id = $2',
+    values: [listId, placeId],
+  }
+
+  const result = await db.query(query);
+
+  return result.rows[0].count === '0' ? true : false;
 };
 
 module.exports = {
@@ -69,4 +90,6 @@ module.exports = {
   isUniqueEmail,
   isValidEmail,
   isUserVisible,
+  isListOwner,
+  isUniqueInList,
  };

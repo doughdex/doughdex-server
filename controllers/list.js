@@ -1,6 +1,6 @@
 const { models } = require('../models');
 const { decodeToken } = require('../middleware');
-const { createPaginationLinks, isUserVisible } = require('./helpers');
+const { createPaginationLinks, isUserVisible, isListOwner, isUniqueInList } = require('./helpers');
 
 const getLists = async (req, res) => {
   try {
@@ -113,6 +113,14 @@ const updateList = async (req, res) => {
 };
 
 const deleteList = async (req, res) => {
+
+  const isOwner = await isListOwner(req.user.id, req.params.list_id);
+
+  if (!isOwner) {
+    res.status(404).json({ message: 'List Not Found' });
+    return;
+  }
+
   try {
     const listId = req.params.list_id;
     await models.List.deleteAllSpotsFromList(listId);
@@ -126,6 +134,26 @@ const deleteList = async (req, res) => {
 };
 
 const addSpotToList = async (req, res) => {
+
+  if (!parseInt(req.params.list_id) || !req.body || !req.body.place_id) {
+    res.status(400).json({ message: 'Bad Request' });
+    return;
+  }
+
+  const isOwner = await isListOwner(req.user.id, req.params.list_id);
+
+  if (!isOwner) {
+    res.status(404).json({ message: 'List Not Found' });
+    return;
+  }
+
+  const isUnique = await isUniqueInList(req.params.list_id, req.body.place_id);
+
+  if (!isUnique) {
+    res.status(400).json({ message: 'Bad Request' });
+    return;
+  }
+
   try {
     const listId = req.params.list_id;
     const placeId = req.body.place_id;

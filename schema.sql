@@ -141,3 +141,7 @@ CREATE TABLE flags (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Add list_places constraint
+ALTER TABLE list_places
+ADD CONSTRAINT unique_list_place
+UNIQUE (list_id, place_id);

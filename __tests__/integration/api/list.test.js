@@ -340,11 +340,144 @@ describe('/api/lists', () => {
   });
 
   describe('DELETE /lists/:list_id', () => {
+    let testToken;
+
+    it('should delete a list when the requesting user is the list creator', async () => {
+        testToken = 'user1Token';
+
+        const response = await request(app)
+          .delete('/api/lists/1')
+          .set('Authorization', `Bearer ${testToken}`)
+          .expect(204);
+
+        expect(response.body).toEqual({});
+    });
+
+    it('should not delete a list when the requesting user is not the list creator', async () => {
+      testToken = 'user2Token';
+
+      const response = await request(app)
+        .delete('/api/lists/1')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'List Not Found' });
+    });
+
 
   });
 
   describe('POST /lists/:list_id/spots', () => {
 
+    let testToken, testSpot;
+
+    it('should add a spot to a list when requesting user is the list creator', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .post('/api/lists/1/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ place_id: '5' })
+        .expect(201)
+        .expect('Content-Type', /json/);
+    });
+
+    it('should not add a spot to a list when requesting user is not the list creator', async () => {
+      testToken = 'user2Token';
+
+      const response = await request(app)
+        .post('/api/lists/1/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ place_id: '5' })
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+    });
+
+    it('should return a 404 if the list is not found', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .post('/api/lists/9999/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ place_id: '1' })
+        .expect(404)
+        .expect('Content-Type', /json/);
+    });
+
+    it('should return a 500 if spot is not valid', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .post('/api/lists/1/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ place_id: '9999' })
+        .expect(500)
+        .expect('Content-Type', /json/);
+    });
+
+    it('should return a 400 if the list_id is invalid', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .post('/api/lists/invalid/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ place_id: '1' })
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Bad Request' });
+    });
+
+    it('should return a 400 if there is no requesty body', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .post('/api/lists/1/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Bad Request' });
+    });
+
+    it('should return a 400 if there is no place_id in the request body', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .post('/api/lists/1/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ name: 'Test Spot'})
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Bad Request' });
+    });
+
+    it('should return a 401 if the user is not authenticated', async () => {
+      testToken = '';
+
+      const response = await request(app)
+        .post('/api/lists/1/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ place_id: '1' })
+        .expect(401)
+        .expect('Content-Type', /json/);
+    });
+
+    it('should not add a spot to a list if the spot already exists in list', async () => {
+      testToken = 'user1Token';
+
+      const response = await request(app)
+        .post('/api/lists/1/spots')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({ place_id: '1' })
+        .expect(400)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).toEqual({ message: 'Bad Request' });
+    });
   });
 
   describe('DELETE /lists/:list_id/spots/:spot_id', () => {

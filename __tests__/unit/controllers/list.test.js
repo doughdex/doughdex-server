@@ -1,7 +1,7 @@
 const { server } = require('../../../app');
 const { controllers } = require('../../../controllers');
 const { models } = require('../../../models')
-const { createPaginationLinks, isUserVisible } = require('../../../controllers/helpers')
+const { createPaginationLinks, isUserVisible, isListOwner, isUniqueInList } = require('../../../controllers/helpers')
 
 let req, res, consoleError;
 
@@ -24,6 +24,8 @@ jest.mock('../../../models', () => ({
 jest.mock('../../../controllers/helpers', () => ({
   createPaginationLinks: jest.fn().mockReturnValue({}),
   isUserVisible: jest.fn().mockReturnValue(true),
+  isListOwner: jest.fn().mockReturnValue(true),
+  isUniqueInList: jest.fn().mockReturnValue(true),
 }));
 
 describe('List controller', () => {
@@ -276,6 +278,9 @@ describe('List controller', () => {
     it('should return a 201 status code and data when provided valid data', async () => {
       req.params.list_id = 1;
       req.params.place_id = 2;
+      req.body = {
+        place_id: 2,
+      };
 
       const mockData = {
         rows: [
@@ -295,6 +300,11 @@ describe('List controller', () => {
     });
 
     it('should return a 500 status code and error message when an error occurs', async () => {
+      req.params.list_id = 1;
+      req.params.place_id = 2;
+      req.body = {
+        place_id: 2,
+      };
 
       models.List.addSpotToList.mockRejectedValue(new Error('Mocked error message'));
 
