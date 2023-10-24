@@ -145,3 +145,8 @@ CREATE TABLE flags (
 ALTER TABLE list_places
 ADD CONSTRAINT unique_list_place
 UNIQUE (list_id, place_id);
+
+-- Add indexing
+CREATE INDEX idx_users_email ON users(uid);
+CREATE INDEX idx_list_places_list_id ON list_places(list_id);
+CREATE INDEX idx_places_id ON places(id);
